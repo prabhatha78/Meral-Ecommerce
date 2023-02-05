@@ -1,0 +1,115 @@
+<section style="background:#F1F1F1">
+    <div class="container-fluid p-5">
+        {{#if cartItems}}
+        <div class="list-head pl-5 pb-4 pt-2">
+            <h1 style="color:#bdb8b8">CART</h1>
+        </div>
+        {{#each cartItems}}
+        <div class="cart-main">
+            <div class="cart col-md-6 p-4" style="border-top: 2px solid #8b8a898a; ">
+                <div class="cart-block1">
+
+                    <div class="cart-img">
+                        <a href="/product/{{this.product._id}}"><img src="/images/product-images/{{this.product.images.[0].filename}} "
+                            style="width:10rem;height:8rem; object-fit:cover"></a>
+                    </div>
+
+                    <div class="pt-4 pl-4" style="color:#bdb8b8">
+                        <button class="cart-item-count mr-3"
+                            onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)">-</button>
+                        <span id="{{this.product._id}}">{{this.quantity}}</span>
+                        <button class="cart-item-count ml-3"
+                            onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)">+</button>
+                    </div>
+                </div>
+
+                <div class="cart-block2">
+                    <div class="cart-details">
+                        <div class="pro-details col-md-8">
+                            <div class="pro-title">
+                                <h4>{{this.product.product_name}}</h4>
+                                {{!-- <h6 style="font-size: small;">FACEWASH</h6> --}}
+                                <p style="font-size:small;">{{this.product.volume}}<br>Inclusive of all taxes</p>
+                            </div>
+                        </div>
+                        <div>
+                            <button class="cart-item-count" style="border:none"
+                                onclick="removeFromCart('{{this._id}}','{{this.product._id}}')">X</button>
+                        </div>
+                    </div>
+                    <div class="price pt-4">
+                        <span class="float-right" style="font-size:medium;">MRP: ₹ <span
+                                id="price{{this.product._id}}">{{this.price}}</span></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {{/each}}
+        <div class="total col-md-6 mt-5 pt-4 mb-5">
+            <div class="col-md-8">
+                <h5>SUBTOTAL</h5>
+            </div>
+            <div class="col-md-4">
+                <h6 class="float-right">MRP: ₹ <span id="{{cart._id}}">{{cart.total}}</span></h6>
+            </div>
+        </div>
+        <a href="/checkout" type="button" class="cart-button">CONTINUE TO CHECKOUT</a>
+        {{else}}
+        <div class="list-head pb-4 pt-2" style="text-align:center">
+            <h1 style="color:#bdb8b8">CART</h1>
+            <div>
+                <p class="pt-5 pl-5" style="font-size:35px;">Your cart is empty</p>
+                <img src="/images/cart.png">
+            </div>
+        </div>
+        
+        {{/if}}
+    </div>
+</section>
+
+<script>
+    function changeQuantity(cartId, proId, count) {
+        let quantity = parseInt(document.getElementById(proId).innerHTML)
+        let price = parseInt(document.getElementById('price' + proId).innerHTML)
+        let total = parseInt(document.getElementById(cartId).innerHTML)
+        count = parseInt(count)
+        $.ajax({
+            url: '/change-product-quantity/',
+            data: {
+                cart: cartId,
+                product: proId,
+                count: count,
+                quantity: quantity
+            },
+            method: 'post',
+            success: (response) => {
+                if (response.removeProduct) {
+                    alert("Product removed from cart")
+                    location.reload()
+                } else {
+                    document.getElementById(cartId).innerHTML = total + (price * count / quantity)
+                    document.getElementById(proId).innerHTML = quantity + count
+                    document.getElementById('price' + proId).innerHTML = (price / quantity) * (quantity + count)
+                }
+            }
+        })
+    }
+    function removeFromCart(cartId, proId) {
+        let price = parseInt(document.getElementById('price' + proId).innerHTML)
+        $.ajax({
+            url: '/remove-from-cart/',
+            data: {
+                cartId: cartId,
+                proId: proId,
+                price:price
+            },
+            method: 'post',
+            success: (response) => {
+                if (response.removeProduct) {
+                    alert("Product removed from cart")
+                    location.reload()
+                }
+            }
+        })
+    }
+</script>

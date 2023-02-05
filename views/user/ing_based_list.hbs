@@ -1,0 +1,33 @@
+<section style="background:black">
+    <div class="container p-5">
+        <div class="list-head pb-5 pt-2">
+            <h1 style="color:#bdb8b8">{{ingredient.ingredient_name}}</h1>
+            <p>
+                {{ingredient.ingre_descrypt}}
+            </p>
+        </div>
+        
+        <div class="product-list pt-5">
+            {{#each product}}
+                <div class="col-md-3 col-sm-6">
+                    <a href="/product/{{this._id}}" class="pro-card">
+                        <div class="black-box">
+                            <div class="product-img">
+                                <img src="/images/product-images/{{this.images.[0].filename}}">
+                            </div>
+                            <div class="product-bottom">
+                                <div class="product-name">{{this.product_name}}</div>
+                                <div class="price">
+                                    <span class="rupee-icon">₹</span> {{this.promo_price}}
+                                    <span class="line-through"><span class="rupee-icon">₹</span> {{this.reg_price}}</span>
+                                </div>
+                                 <button class="pro-btn" onclick="addToCart('{{this._id}}','{{this.promo_price}}')">Add to cart</button>
+                            </div>
+                        </div>
+                    </a>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+    </div>
+</section>

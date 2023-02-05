@@ -1,0 +1,13 @@
+<section>
+    <div class="shop p-0 m-0">
+        <div class="category">
+            {{#each category}}
+            <div class="sub-category">
+                <a href="/cat_based_list/{{this._id}}" value="{{this._id}}">{{this.category_name}}</a>
+                <img src="/images/category-images/{{this.image.[0].filename}}">
+            </div>
+            {{/each}}
+        </div>
+
+    </div>
+</section>
