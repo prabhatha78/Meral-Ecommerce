@@ -176,7 +176,7 @@ module.exports = {
                         promo_price: proDetails.promo_price,
                         quantity: parseInt(proDetails.quantity),
                         volume: proDetails.volume,
-                        category_id: proDetails.category_id,
+                        category: proDetails.category,
                         ingredient: proDetails.ingredient,
                         images: proDetails.images
                     }
@@ -280,6 +280,13 @@ module.exports = {
                 })
         })
     },
+
+    getOrder:()=>{
+        return new Promise(async(resolve,reject)=>{
+            let order = await db.get().collection(collection.ORDER_COLLECTION).find().toArray()
+            resolve(order)
+        })
+    }
 
 
 }

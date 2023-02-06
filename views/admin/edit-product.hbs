@@ -58,7 +58,6 @@
                     </a>
                     <div class="submenu">
                         <a href="/admin/order-list">Order list</a>
-                        <a href="page-orders-detail.html">Order detail</a>
                     </div>
                 </li>
                 <li class="menu-item has-submenu">
@@ -188,11 +187,11 @@
                                         </div>
                                         <div class="col-lg-4">
                                             <label class="form-label">Category</label>
-                                            <select class="form-select" name="category_id"
+                                            <select class="form-select" name="category"
                                                 aria-label="Default select example">
                                                 <option value="">Select one</option>
                                                 {{#each category}}
-                                                <option name="category_id" value="{{this._id}}">{{this.category_name}}
+                                                <option name="category" value="{{this.category_name}}">{{this.category_name}}
                                                 </option>
                                                 {{/each}}
                                             </select>
@@ -202,7 +201,7 @@
                                             <select class="form-select" name="ingredient">
                                                 <option>Select one</option>
                                                 {{#each ingredient}}
-                                                <option name="ingredient_id" value="{{this._id}}">{{this.ingredient_name}}</option>
+                                                <option name="ingredient" value="{{this.ingredient_name}}">{{this.ingredient_name}}</option>
                                                 {{/each}}
                                             </select>
                                         </div>

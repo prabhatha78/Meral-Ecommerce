@@ -407,6 +407,7 @@ module.exports = {
 
     placeOrder: (order, user, products, cart) => {
         return new Promise(async (resolve, reject) => {
+            let name = user.firstname + " " + user.lastname
             let today = new Date()
             let expectedDeliveryDate = new Date(today)
             expectedDeliveryDate.setDate(today.getDate() + 6);
@@ -426,6 +427,7 @@ module.exports = {
                     mobile: order.contact
                 },
                 userId: ObjectId(order.userId),
+                username: name,
                 paymentMethod: order.paymentMethod,
                 products: products,
                 subtotal: cart.total,

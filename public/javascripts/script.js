@@ -12,6 +12,8 @@ function addToCart(proId,price) {
                 count = parseInt(count) + 1
                 $('#cart-count').html(count)
                 location.reload()
+            } else {
+                location.href = '/login'
             }
         }
     })

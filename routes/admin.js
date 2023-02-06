@@ -41,9 +41,12 @@ router.get('/dashboard', function (req, res) {
     }
 })
 
-router.get('/order-list', (req, res) => {
+router.get('/order-list', async (req, res) => {
     if (req.session.adminloggedIn) {
-        res.render('admin/order-list', { admin: true });
+        console.log('lll');
+        let order = await adminController.getOrder()
+        console.log(order);
+        res.render('admin/order-list', { admin: true,order});
     } else {
         res.redirect('/admin')
     }
@@ -284,7 +287,6 @@ router.get('/edit-coupon/:id', async function (req, res) {
 })
 
 router.post('/edit-coupon/:id', async (req, res) => {
-
     adminController.updateCoupon(req.params.id, req.body).then(() => {
         res.redirect('/admin/coupon-list')
     })
@@ -298,6 +300,7 @@ router.get('/delete-coupon/:id', function (req, res) {
         res.redirect('/admin/coupon-list')
     })
 })
+
 
 
 module.exports = router;
