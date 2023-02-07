@@ -1,6 +1,7 @@
 var express = require('express');
 var router = express.Router();
 const adminController = require('../controllers/admin-controller')
+const usercontroller = require('../controllers/user-controller')
 const { uploadCategory, uploadProduct, uploadIngredient } = require('../middleware/image-upload')
 const deleteImage = require('../controllers/delete-controller')
 
@@ -32,9 +33,10 @@ router.post('/login', function (req, res) {
     })
 })
 
-router.get('/dashboard', function (req, res) {
+router.get('/dashboard', async function (req, res) {
     if (req.session.adminloggedIn) {
-        res.render('admin/dashboard', { admin: true })
+        let dashboard = await adminController.dashboardCount()
+        res.render('admin/dashboard', { admin: true ,dashboard})
     }
     else {
         res.redirect('/admin')
@@ -46,11 +48,18 @@ router.get('/order-list', async (req, res) => {
         console.log('lll');
         let order = await adminController.getOrder()
         console.log(order);
-        res.render('admin/order-list', { admin: true,order});
+        res.render('admin/order-list', { admin: true, order });
     } else {
         res.redirect('/admin')
     }
 })
+
+router.get('/order-details/:id', async function (req, res) {
+    const order = await usercontroller.getOrder(req.params.id)
+    const products = await usercontroller.getOrderProducts(req.params.id)
+    res.render('admin/order-detail', { admin: true, order, products })
+})
+
 
 router.get('/transaction', (req, res) => {
     if (req.session.adminloggedIn) {
@@ -300,6 +309,8 @@ router.get('/delete-coupon/:id', function (req, res) {
         res.redirect('/admin/coupon-list')
     })
 })
+
+
 
 
 

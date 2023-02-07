@@ -245,7 +245,7 @@ module.exports = {
     },
 
 
-    getCoupon:(couponId) => {
+    getCoupon: (couponId) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.COUPON_COLLECTION).findOne({ _id: ObjectId(couponId) }).then((response) => {
                 resolve(response)
@@ -260,7 +260,7 @@ module.exports = {
                 .updateOne({ _id: ObjectId(couponId) }, {
                     $set: {
                         code: coupon.code,
-                        discount:coupon.discount,
+                        discount: coupon.discount,
                         expiry_date: coupon.expiry_date,
                         min_purchase: coupon.min_purchase,
                     }
@@ -281,10 +281,19 @@ module.exports = {
         })
     },
 
-    getOrder:()=>{
-        return new Promise(async(resolve,reject)=>{
+    getOrder: () => {
+        return new Promise(async (resolve, reject) => {
             let order = await db.get().collection(collection.ORDER_COLLECTION).find().toArray()
             resolve(order)
+        })
+    },
+
+    dashboardCount: () => {
+        return new Promise(async (resolve, reject) => {
+            let product = await db.get().collection(collection.PRODUCT_COLLECTION).find().count()
+            let order = await db.get().collection(collection.ORDER_COLLECTION).find().count()
+            let category = await db.get().collection(collection.CATEGORY_COLLECTION).find().count()
+            resolve({ product, order,category })
         })
     }
 
