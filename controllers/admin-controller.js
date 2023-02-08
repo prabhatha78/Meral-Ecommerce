@@ -298,7 +298,6 @@ module.exports = {
     },
 
     changeOrderstatus: (orderId, status) => {
-        console.log('mmmmmmmm');
         let date = new Date().toString().slice(0, 21)
         
         const obj = {
@@ -343,7 +342,8 @@ module.exports = {
                         'shipmentStatus.shipped.status': true,
                         'shipmentStatus.outForDelivery.status': true,
                         'shipmentStatus.delivered': obj,
-                        paymentStatus: 'Paid'
+                        paymentStatus: 'Paid',
+                        orderStatus:'Delivered'
                     }
                 }).then((response) => { 
                     resolve(response) })

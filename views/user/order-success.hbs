@@ -1,14 +1,22 @@
-<div class="wrapper green m-5">
-	<div class="header__wrapper">
-		<div class="header">
+<section class="pt-5 mt-5">
+  <div class="mt-3">
+    <div class="order green m-5">
+	<div class="main__order">
+		<div class="main">
 			<div class="sign"><span></span></div>
 		</div>
 	</div>
 	<h1>Order Placed Successfully</h1>
 	<p>Everything works fine!</p>
-	
-	<a href="/orders"><button>View Orders</button></a>
-</div>
+	</div>
+  </div>
+</section>
+
+<script>
+  setTimeout(()=>{
+        location.href="/orders"
+    },2000)
+</script>
 
 <style>
   /*
@@ -27,7 +35,7 @@ body {
   text-align: center;
 }
 
-.wrapper {
+.order {
   animation: wrapperAni 230ms ease-in 200ms forwards;
   background: rgb(255, 255, 255);
   border: 1px solid rgba(0, 0, 0, 0.15);
@@ -42,14 +50,14 @@ body {
   width: 300px;
 }
 
-.header__wrapper {
+.main__order {
   height: 200px;
   overflow: hidden;
   position: relative;
   width: 100%;
 }
 
-.header {
+.main {
   animation: headerAni 230ms ease-in 430ms forwards;
   border-radius: 0;
   height: 700px;
@@ -59,7 +67,7 @@ body {
   top: -500px;
   width: 700px;
 }
-.header .sign {
+.main .sign {
   animation: signAni 430ms ease-in 660ms forwards;
   border-radius: 50%;
   bottom: 50px;
@@ -113,7 +121,7 @@ button {
 /*
  * COLOR SPECIFIC
 */
-.green .header {
+.green .main {
   background-color: rgb(129, 167, 147);
 }
 .green .sign {

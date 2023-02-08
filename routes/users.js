@@ -7,6 +7,7 @@ const payment = require('../helpers/payment')
 const nodemailer = require('nodemailer');
 const session = require('express-session');
 const getInvoice = require('../helpers/invoice')
+const verifyUser = require('../middleware/userAuth')
 const verifyLogin = (req, res, next) => {
   if (req.session.userloggedIn) {
     next()
@@ -163,7 +164,7 @@ router.get('/product/:id', async function (req, res) {
   }
 })
 
-router.get('/cart', verifyLogin, async function (req, res) {
+router.get('/cart', verifyUser, async function (req, res) {
   const cartItems = await usercontroller.getCartProducts(req.session.user._id)
   const cart = await usercontroller.getCart(req.session.user._id)
   const cartCount = await usercontroller.getCartCount(req.session.user._id)
@@ -171,7 +172,7 @@ router.get('/cart', verifyLogin, async function (req, res) {
 })
 
 
-router.post('/add-to-cart/', verifyLogin, (req, res) => {
+router.post('/add-to-cart/', verifyUser, (req, res) => {
   usercontroller.addToCart(req.body, req.session.user._id).then(() => {
     usercontroller.addToInvoice(req.body, req.session.user._id).then(() => {
       res.json({ status: true })
@@ -180,7 +181,7 @@ router.post('/add-to-cart/', verifyLogin, (req, res) => {
 
 })
 
-router.post('/change-product-quantity/', verifyLogin, async (req, res) => {
+router.post('/change-product-quantity/', verifyUser, async (req, res) => {
   usercontroller.changeInvoiceQuantity(req.body).then((response) => {
     usercontroller.changeProductQuantity(req.body).then((response) => {
       res.json(response)
@@ -188,13 +189,13 @@ router.post('/change-product-quantity/', verifyLogin, async (req, res) => {
   })
 })
 
-router.post('/remove-from-cart/', verifyLogin, async (req, res) => {
+router.post('/remove-from-cart/', verifyUser, async (req, res) => {
   usercontroller.removeFromCart(req.body).then((response) => {
     res.json(response)
   })
 })
 
-router.get('/checkout', verifyLogin, async (req, res) => {
+router.get('/checkout', verifyUser, async (req, res) => {
   let user = await usercontroller.getUser(req.session.user._id)
   const cartItems = await usercontroller.getCartProducts(user._id)
   const cart = await usercontroller.getCart(user._id)
@@ -204,7 +205,7 @@ router.get('/checkout', verifyLogin, async (req, res) => {
 
 
 
-router.post('/checkout', verifyLogin, async (req, res) => {
+router.post('/checkout', verifyUser, async (req, res) => {
   const cartItems = await usercontroller.getCartProducts(req.session.user._id)
   const cart = await usercontroller.getCart(req.session.user._id)
   const user = await usercontroller.getAddress(req.body.addressId, req.session.user._id);
@@ -223,19 +224,19 @@ router.post('/checkout', verifyLogin, async (req, res) => {
   })
 })
 
-router.post('/add-new-address', verifyLogin, async (req, res) => {
+router.post('/add-new-address', verifyUser, async (req, res) => {
   usercontroller.addAddress(req.body, req.session.user._id).then(() => {
     res.redirect('/checkout');
   })
 })
 
-router.post('/add-latest-address', verifyLogin, async (req, res) => {
+router.post('/add-latest-address', verifyUser, async (req, res) => {
   usercontroller.addAddress(req.body, req.session.user._id).then(() => {
     res.redirect('/address');
   })
 })
 
-router.post('/apply-coupon', verifyLogin, async (req, res) => {
+router.post('/apply-coupon', verifyUser, async (req, res) => {
   const cart = await usercontroller.getCart(req.session.user._id)
   const total = cart.finalTotal
   usercontroller.applyCoupon(req.body, req.session.user._id, total).then((response) => {
@@ -247,7 +248,7 @@ router.post('/apply-coupon', verifyLogin, async (req, res) => {
   })
 })
 
-router.post('/remove-coupon', verifyLogin, async (req, res) => {
+router.post('/remove-coupon', verifyUser, async (req, res) => {
   const cart = await usercontroller.getCart(req.session.user._id)
   const total = cart.finalTotal
   usercontroller.removeCoupon(req.body, req.session.user._id, total).then((response) => {
@@ -259,23 +260,23 @@ router.post('/remove-coupon', verifyLogin, async (req, res) => {
   })
 })
 
-router.get('/order-success', verifyLogin, (req, res) => {
+router.get('/order-success', verifyUser, (req, res) => {
   res.render('user/order-success', { user: req.session.user })
 })
 
-router.get('/orders', async (req, res) => {
+router.get('/orders',verifyUser, async (req, res) => {
   const orders = await usercontroller.getMyOrders(req.session.user._id)
   res.render('user/orders', { user: req.session.user, orders })
 })
 
-router.get('/view-order-details/:id', verifyLogin, async (req, res) => {
+router.get('/view-order-details/:id', verifyUser, async (req, res) => {
   const order = await usercontroller.getOrder(req.params.id)
   const products = await usercontroller.getOrderProducts(req.params.id)
   res.render('user/view-order-details', { user: req.session.user, products, order })
 })
 
 
-router.post('/verify-payment', verifyLogin, (req, res) => {
+router.post('/verify-payment', verifyUser, (req, res) => {
   usercontroller.verifyPayment(req.body).then(() => {
     usercontroller.changeOrderStatus(req.body['order[receipt]'], req.session.user._id).then(() => {
       console.log('Payment successfull');
@@ -286,42 +287,47 @@ router.post('/verify-payment', verifyLogin, (req, res) => {
   })
 })
 
-router.get('/coupons', (req, res) => {
-  usercontroller.getAllCoupon().then((coupon) => {
+router.get('/coupons',async (req, res) => {
+  if (req.session.user) {
+    const cartCount = await usercontroller.getCartCount(req.session.user._id)
+    usercontroller.getAllCoupon().then((coupon) => {
+    res.render('user/coupons', { user: req.session.user, coupon, cartCount })
+    })
+  } else {
     res.render('user/coupons', { coupon })
-  })
+  }
 })
 
 
-router.post('/add-to-wishlist/:id', verifyLogin, (req, res) => {
+router.post('/add-to-wishlist/:id', verifyUser, (req, res) => {
   usercontroller.addToWishlist(req.params.id, req.session.user._id).then((response) => {
     res.json({ status: true })
   })
 })
 
-router.get('/wishlist', verifyLogin, (req, res) => {
+router.get('/wishlist', verifyUser, (req, res) => {
   usercontroller.viewWishlist(req.session.user._id).then((wishlist) => {
     res.render('user/wishlist', { user: req.session.user, wishlist })
   })
 })
 
-router.get('/account', verifyLogin, (req, res) => {
+router.get('/account', verifyUser, (req, res) => {
   res.render('user/account', { user: req.session.user })
 })
 
-router.get('/profile', verifyLogin, async (req, res) => {
+router.get('/profile', verifyUser, async (req, res) => {
   let user = await usercontroller.getUser(req.session.user._id)
   res.render('user/profile', { user })
 })
 
-router.post('/update-profile', verifyLogin, (req, res) => {
+router.post('/update-profile', verifyUser, (req, res) => {
   usercontroller.updateProfile(req.body).then((response) => {
     res.json({ status: true })
   })
 })
 
 
-router.get('/invoice/:id', verifyLogin, (req, res) => {
+router.get('/invoice/:id', verifyUser, (req, res) => {
   usercontroller.getOrder(req.params.id).then(async (order) => {
     let invoiceDetails = await usercontroller.invoiceDetails(req.params.id)
     let invoice = await getInvoice(order, invoiceDetails);
@@ -329,18 +335,18 @@ router.get('/invoice/:id', verifyLogin, (req, res) => {
   })
 })
 
-router.get('/address', verifyLogin, async (req, res) => {
+router.get('/address', verifyUser, async (req, res) => {
   let user = await usercontroller.getUser(req.session.user._id)
   res.render('user/address', { user })
 })
 
-router.get('/cancel-order/:id', verifyLogin, (req, res) => {
+router.get('/cancel-order/:id', verifyUser, (req, res) => {
   usercontroller.cancelOrder(req.params.id).then((response) => {
     res.json({ status: true })
   })
 })
 
-router.post('/change-password', verifyLogin, (req, res) => {
+router.post('/change-password', verifyUser, (req, res) => {
   usercontroller.changePassword(req.session.user._id, req.body).then((response) => {
     if (response.changePassword) {
       res.json({ changePassword: true })
@@ -357,13 +363,13 @@ router.post('/change-password', verifyLogin, (req, res) => {
   })
 })
 
-router.get('/delete-address/:id',verifyLogin,(req,res)=>{
+router.get('/delete-address/:id',verifyUser,(req,res)=>{
   usercontroller.deleteAddress(req.params.id,req.session.user._id).then((response)=>{
     res.json({status:true})
   })
 })
 
-router.post('/edit-address',verifyLogin,(req,res)=>{
+router.post('/edit-address',verifyUser,(req,res)=>{
   usercontroller.editAddress(req.session.user._id,req.body).then((response)=>{
     res.redirect('/address')
   })

@@ -18,7 +18,7 @@
                                     style="width:8rem;height:8rem; object-fit:cover"></a>
                         </div>
 
-                        <div class="pro-details col-md-8">
+                        <div class="pro-details col-md-7">
                             <div class="pro-title">
                                 <h4>{{this.product.product_name}}</h4>
                                 <h6 style="font-size: small;font-weight:500">{{this.product.category}}</h6>
@@ -27,7 +27,7 @@
                         </div>
                     </div>
 
-                    <div style="display:flex;column-gap:60px;">
+                    <div style="display:flex;column-gap:50px;">
                         <div class="pt-4 pl-4" style="color:#000">
                             <button class="cart-item-count mr-3"
                                 onclick="changeQuantity('{{this._id}}','{{this.product._id}}',-1)">-</button>
@@ -35,13 +35,11 @@
                             <button class="cart-item-count ml-3"
                                 onclick="changeQuantity('{{this._id}}','{{this.product._id}}',1)">+</button>
                         </div>
-
                         <div class="price pt-4">
                             <span class="float-right" style="font-size:medium;">MRP: ₹ <span
                                     id="price{{this.product._id}}">{{this.price}}</span></span>
                         </div>
                     </div>
-
                 </div>
                 <div class="cart-details">
                     <div>
@@ -53,6 +51,7 @@
             </div>
         </div>
         {{/each}}
+
         <div class="container">
             <hr style="border:3px solid black">
             <div class="total mt-3 mb-5">
