@@ -19,7 +19,6 @@ router.get('/', function (req, res, next) {
 
 
 router.post('/login', function (req, res) {
-    console.log("jhgjggjhgjh");
     adminController.adminLogin(req.body).then((response) => {
         if (response.status) {
             req.session.adminloggedIn = true
@@ -45,9 +44,7 @@ router.get('/dashboard', async function (req, res) {
 
 router.get('/order-list', async (req, res) => {
     if (req.session.adminloggedIn) {
-        console.log('lll');
         let order = await adminController.getOrder()
-        console.log(order);
         res.render('admin/order-list', { admin: true, order });
     } else {
         res.redirect('/admin')
@@ -74,7 +71,6 @@ router.get('/transaction', (req, res) => {
 router.get('/category-list', function (req, res) {
     if (req.session.adminloggedIn) {
         adminController.getAllCategory().then((category) => {
-            console.log(category)
             res.render('admin/category-list', { category, admin: true })
         })
     } else {
@@ -87,7 +83,6 @@ router.post('/add-category', uploadCategory, function (req, res) {
     if (req.session.adminloggedIn) {
         req.body.image = req.files.image;
         adminController.addCategory(req.body).then((response) => {
-            console.log(response);
             res.redirect('/admin/category-list');
         })
     } else {
@@ -114,7 +109,6 @@ router.post('/edit-category/:id', uploadCategory, async (req, res) => {
         } else {
             existImage = await adminController.fetchCategoryImage(req.params.id)
             req.body.image = req.files.image;
-            console.log(existImage[0].path);
             deleteImage.deleteFile(existImage[0].path)
         }
         adminController.updateCategory(req.params.id, req.body).then(() => {
@@ -140,7 +134,6 @@ router.post('/add-ingredient', uploadIngredient, function (req, res) {
     if (req.session.adminloggedIn) {
         req.body.image = req.files.image;
         adminController.addIngredient(req.body).then((response) => {
-            console.log(response)
             res.redirect('/admin/ingredient-list')
         })
     } else {
@@ -175,7 +168,6 @@ router.post('/edit-ingredient/:id', uploadIngredient, async (req, res) => {
 
 router.get('/product-list', (req, res) => {
     adminController.getAllProduct().then((product) => {
-        console.log(product)
         res.render('admin/product-list', { product, admin: true })
     })
 })
@@ -195,7 +187,6 @@ router.post('/add-product', uploadProduct, function (req, res) {
     req.body.status = true
     req.body.images = [req.files.image1[0], req.files.image2[0], req.files.image3[0]]
     adminController.addProduct(req.body).then((response) => {
-        console.log(response);
         res.redirect('/admin/product-list');
     })
 })
@@ -208,7 +199,6 @@ router.get('/delete-product/:id', function (req, res) {
 })
 
 router.get('/edit-product/:id', async (req, res) => {
-    console.log(req.params.id)
     let product = await adminController.getProduct(req.params.id)
     let category = await adminController.getAllCategory()
     let ingredient = await adminController.getAllIngredient()
@@ -217,7 +207,6 @@ router.get('/edit-product/:id', async (req, res) => {
 
 
 router.post('/edit-product/:id', uploadProduct, async function (req, res) {
-    console.log(req.files);
     if (req.files.image1 == null) {
         image1 = await adminController.getProductImage(req.params.id, 0)
     } else {
@@ -275,7 +264,6 @@ router.get('/coupon-list', async function (req, res) {
 router.post('/add-coupon', function (req, res) {
     if (req.session.adminloggedIn) {
         adminController.addCoupon(req.body).then((response) => {
-            console.log(response)
             res.redirect('/admin/coupon-list')
         })
     } else {
@@ -302,11 +290,16 @@ router.post('/edit-coupon/:id', async (req, res) => {
 })
 
 router.get('/delete-coupon/:id', function (req, res) {
-    console.log('xxxxxxx');
-
     let couponId = req.params.id
     adminController.deleteCoupon(couponId).then((response) => {
         res.redirect('/admin/coupon-list')
+    })
+})
+
+
+router.get('/change-order-status/:orderId/:status',function(req, res){
+    adminController.changeOrderstatus(req.params.orderId, req.params.status).then((response) => {
+        res.json({ status: true })
     })
 })
 

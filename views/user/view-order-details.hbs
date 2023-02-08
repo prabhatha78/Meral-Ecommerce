@@ -1,100 +1,198 @@
 <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
 
-<section class="h-100 gradient-custom pt-5">
-    <div class="p-5 h-100 mt-5">
-        <div class="row d-flex justify-content-center align-items-center h-100">
-            <div class="col-lg-10 col-xl-8">
-                <div class="card" style="border-radius: 10px;">
-                    <div class="card-body p-4">
-                        <div class="d-flex justify-content-between align-items-center mb-4">
-                            <p class="lead fw-normal mb-0" style="color: #a8729a;">Order</p>
-                            <p class="small text-muted mb-0">Order ID :{{order._id}}</p>
-                        </div>
-                        {{#each products}}
-                        <div class="card shadow-0 border mb-4">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-2">
-                                        <img src="/images/product-images/{{this.product.images.[0].filename}} "
-                                            class="img-fluid" alt="Phone">
-                                    </div>
-                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                        <p class="text-muted mb-0">{{this.product.product_name}}</p>
-                                    </div>
-                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                        <p class="text-muted mb-0 small">{{this.product.volume}}</p>
-                                    </div>
-                                    {{!-- <div
-                                        class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                        <p class="text-muted mb-0 small">Capacity: 64GB</p>
-                                    </div> --}}
-                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                        <p class="text-muted mb-0 small">{{this.quantity}}</p>
-                                    </div>
-                                    <div class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                        <p class="text-muted mb-0 small">₹ {{this.product.promo_price}}</p>
-                                    </div>
+<section class=" pt-5">
+    <div class="container">
+        <div>
+            <div class="p-5 mt-5">
+                <div class="row d-flex justify-content-center align-items-center h-100">
+                    <div class="col-md-12">
+                        <div class="card" style="border-radius: 10px;">
+                            <div class="card-body p-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
+                                    <p class="lead fw-normal mb-0" style="color: #a8729a;">Order</p>
+                                    <p class="small text-muted mb-0">Order ID :{{order._id}}</p>
                                 </div>
-                            </div>
-                        </div>
-                        {{/each}}
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-12 col-md-10 hh-grayBox pt45 pb20">
-                                    <div class="row justify-content-between">
-                                        <div class="order-tracking completed">
-                                            <span class="is-complete"></span>
-                                            <p>Ordered<br><span>Mon, June 24</span></p>
-                                        </div>
-                                        <div class="order-tracking completed">
-                                            <span class="is-complete"></span>
-                                            <p>Shipped<br><span>Tue, June 25</span></p>
-                                        </div>
-                                        <div class="order-tracking">
-                                            <span class="is-complete"></span>
-                                            <p>Delivered<br><span>Fri, June 28</span></p>
+                                {{#each products}}
+                                <div class="card shadow-0 border mb-4">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-2">
+                                                <img src="/images/product-images/{{this.product.images.[0].filename}} "
+                                                    class="img-fluid" alt="Phone">
+                                            </div>
+                                            <div
+                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                                <p class="text-muted mb-0">{{this.product.product_name}}</p>
+                                            </div>
+                                            <div
+                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                                <p class="text-muted mb-0 small">Volume: {{this.product.volume}}</p>
+                                            </div>
+                                            {{!-- <div
+                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                                <p class="text-muted mb-0 small">Capacity: 64GB</p>
+                                            </div> --}}
+                                            <div
+                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                                <p class="text-muted mb-0 small">{{this.quantity}}</p>
+                                            </div>
+                                            <div
+                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                                <p class="text-muted mb-0 small">₹ {{this.product.promo_price}}</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+                                {{/each}}
                             </div>
+                            <div style="display:flex;flex-wrap:wrap-reverse">
+                                <div class="col-md-6">
+                                    hjhkh
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="d-flex pt-2">
+                                        <p class="fw-bold mb-0">Order Details</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ₹
+                                            {{order.total}}</p>
+                                    </div>
+
+                                    <div class="d-flex pt-2">
+                                        <p class="text-muted mb-0">Invoice Number : 788152</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
+                                    </div>
+
+                                    <div class="d-flex mb-5">
+                                        <p class="text-muted mb-0">Recepits Voucher : 18KU-62IIK</p>
+                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span>
+                                            Free</p>
+                                    </div>
+                                    <div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div style="display:flex; justify-content:space-around;flex-wrap:wrap-reverse; max-width:100%;">
+                                <div class="col-md-6">
+                                    <section class="root">
+                                        <div class="order-track">
+                                            <div class="order-track-step">
+                                                {{#if order.shipmentStatus.orderPlaced.status}}
+                                                <div class="order-track-status">
+                                                    <span class="order-success-dot"></span>
+                                                    <span class="order-success-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+                                                    <p class="order-track-text-stat">Order Received</p>
+                                                    <span
+                                                        class="order-track-text-sub">{{order.shipmentStatus.orderPlaced.lastUpdate.date}}</span>
+                                                </div>
+                                                {{else}}
+                                                <div class="order-track-status">
+                                                    <span class="order-track-status-dot"></span>
+                                                    <span class="order-track-status-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+
+                                                </div>
+                                                {{/if}}
+                                            </div>
+                                            <div class="order-track-step">
+                                                {{#if order.shipmentStatus.shipped.status}}
+                                                <div class="order-track-status">
+                                                    <span class="order-success-dot"></span>
+                                                    <span class="order-success-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+                                                    <p class="order-track-text-stat">Order shipped</p>
+                                                    <span
+                                                        class="order-track-text-sub">{{order.shipmentStatus.shipped.lastUpdate.date}}</span>
+                                                </div>
+                                                {{else}}
+                                                <div class="order-track-status">
+                                                    <span class="order-track-status-dot"></span>
+                                                    <span class="order-track-status-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+
+                                                </div>
+                                                {{/if}}
+                                            </div>
+                                            <div class="order-track-step">
+                                                {{#if order.shipmentStatus.outForDelivery.status}}
+                                                <div class="order-track-status">
+                                                    <span class="order-success-dot"></span>
+                                                    <span class="order-success-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+                                                    <p class="order-track-text-stat">Order out for delivery</p>
+                                                    <span
+                                                        class="order-track-text-sub">{{order.shipmentStatus.outForDelivery.lastUpdate.date}}</span>
+                                                </div>
+                                                {{else}}
+                                                <div class="order-track-status">
+                                                    <span class="order-track-status-dot"></span>
+                                                    <span class="order-track-status-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+
+                                                </div>
+                                                {{/if}}
+                                            </div>
+                                            <div class="order-track-step">
+
+                                                {{#if order.shipmentStatus.delivery.status}}
+                                                <div class="order-track-status">
+                                                    <span class="order-success-dot"></span>
+                                                    <span class="order-success-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+                                                    <p class="order-track-text-stat">Order delivered</p>
+                                                    <span
+                                                        class="order-track-text-sub">{{order.shipmentStatus.delivery.lastUpdate.date}}
+                                                    </span>
+                                                </div>
+                                                {{else}}
+                                                <div class="order-track-status">
+                                                    <span class="order-track-status-dot"></span>
+                                                    <span class="order-track-status-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+
+                                                </div>
+                                                {{/if}}
+                                            </div>
+                                        </div>
+                                    </section>
+                                </div>
+                                <div class="col-md-6">
+                                    <section class="root">
+                                       <div class="order-track">
+                                         <h6>Delivery details:</h6>
+                                    {{order.deliveryDetails.address.line1}}, <br>
+                                    {{order.deliveryDetails.address.line2}}, <br>
+                                    {{order.deliveryDetails.address.landmark}}, <br>
+                                    {{order.deliveryDetails.address.citystate}}- {{order.deliveryDetails.address.zip}}
+                                    <br>
+                                    +91-{{order.deliveryDetails.mobile}}
+                                       </div>
+                                    </section>
+                                </div>
+                            </div>
+
+                        </div>
+                        <div class="card-footer border-0 px-4 py-5"
+                            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
+
+                            <button onclick="getOrderDetails('{{order._id}}')"
+                                class="btn btn-outline-primary mt-3">Download
+                            </button>
                         </div>
                     </div>
-
-                    <div class="d-flex justify-content-between pt-2">
-                        <p class="fw-bold mb-0">Order Details</p>
-                        <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ₹ {{order.total}}</p>
-                    </div>
-
-                    <div class="d-flex justify-content-between pt-2">
-                        <p class="text-muted mb-0">Invoice Number : 788152</p>
-                        <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <p class="text-muted mb-0">{{order}}</p>
-                    </div>
-
-                    <div class="d-flex justify-content-between mb-5">
-                        <p class="text-muted mb-0">Recepits Voucher : 18KU-62IIK</p>
-                        <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span> Free</p>
-                    </div>
-                </div>
-                <div class="card-footer border-0 px-4 py-5"
-                    style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-
-                    <button onclick="getOrderDetails('{{order._id}}')" class="btn btn-outline-primary mt-3">Download
-                    </button>
-
-                    <h5 class="d-flex align-items-center justify-content-end text-white text-uppercase mb-0">Total
-                        paid: <span class="h2 mb-0 ms-2">₹ {{order.total}}</span></h5>
                 </div>
             </div>
         </div>
     </div>
     </div>
 </section>
-
-
 <script>
     function getOrderDetails(orderId) {
         $.ajax({
@@ -120,77 +218,78 @@
 
     }
 </script>
-
 <style>
- 
-.pt45{padding-top:45px;}
-.order-tracking{
-	text-align: center;
-	width: 33.33%;
-	position: relative;
-	display: block;
-}
-.order-tracking .is-complete{
-	display: block;
-	position: relative;
-	border-radius: 50%;
-	height: 30px;
-	width: 30px;
-	border: 0px solid #AFAFAF;
-	background-color: #928f88;
-	margin: 0 auto;
-	transition: background 0.25s linear;
-	-webkit-transition: background 0.25s linear;
-	z-index: 2;
-}
-.order-tracking .is-complete:after {
-	display: block;
-	position: absolute;
-	content: '';
-	height: 14px;
-	width: 7px;
-	top: -2px;
-	bottom: 0;
-	left: 5px;
-	margin: auto 0;
-	border: 0px solid #AFAFAF;
-	border-width: 0px 2px 2px 0;
-	transform: rotate(45deg);
-	opacity: 0;
-}
-.order-tracking.completed .is-complete{
-	border-color: #1d4e1a;
-	border-width: 0px;
-	background-color: #1d4e1a;
-}
-.order-tracking.completed .is-complete:after {
-	border-color: #fff;
-	border-width: 0px 3px 3px 0;
-	width: 7px;
-	left: 11px;
-	opacity: 1;
-}
-.order-tracking p {
-	color: #A4A4A4;
-	font-size: 16px;
-	margin-top: 8px;
-	margin-bottom: 0;
-	line-height: 20px;
-}
-.order-tracking p span{font-size: 14px;}
-.order-tracking.completed p{color: #000;}
-.order-tracking::before {
-	content: '';
-	display: block;
-	height: 3px;
-	width: calc(100% - 40px);
-	background-color: #928f88;
-	top: 13px;
-	position: absolute;
-	left: calc(-50% + 20px);
-	z-index: 0;
-}
-.order-tracking:first-child:before{display: none;}
-.order-tracking.completed:before{background-color: #1d4e1a;}
+    .root {
+        padding:1rem 0;
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.574);
+    }
 
+    .order-track {
+        padding: 0 1rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .order-track-step {
+        display: flex;
+        height: 5rem;
+    }
+
+    .order-track-step:last-child .order-track-status span:last-of-type {
+        display: none;
+    }
+
+    .order-track-status {
+        margin-right: 1rem;
+        position: relative;
+    }
+
+    .order-track-status-dot {
+        display: block;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 50%;
+        background: #686666;
+    }
+
+    .order-success-dot {
+        display: block;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 50%;
+        background: #07331c;
+    }
+
+    .order-track-status-line {
+        display: block;
+        margin: 0 auto;
+        width: 2px;
+        height: 5rem;
+        background: #686666;
+    }
+
+    .order-success-line {
+        display: block;
+        margin: 0 auto;
+        width: 2px;
+        height: 5rem;
+        background: #07331c;
+    }
+
+    .order-track-text-stat {
+        font-size: 1rem;
+        font-weight: 500;
+        margin-bottom: 3px;
+    }
+
+    .order-track-text-sub {
+        font-size: 0.7rem;
+        font-weight: 300;
+    }
+
+    .order-track {
+        transition: all 0.3s height 0.3s;
+        transform-origin: top center;
+    }
 </style>

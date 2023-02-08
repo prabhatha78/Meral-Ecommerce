@@ -1,5 +1,6 @@
 <!DOCTYPE HTML>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <title>Meral Dashboard</title>
@@ -95,8 +96,8 @@
                     </li>
                     <li class="dropdown nav-item">
                         <a class="dropdown-toggle" data-bs-toggle="dropdown" href="#" id="dropdownAccount"
-                            aria-expanded="false"> <img class="img-xs rounded-circle"
-                                src="/images/log.png" alt="User"></a>
+                            aria-expanded="false"> <img class="img-xs rounded-circle" src="/images/log.png"
+                                alt="User"></a>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownAccount">
                             <a class="dropdown-item text-danger" href="/admin/logout"><i
                                     class="material-icons md-exit_to_app"></i>Logout</a>
@@ -121,16 +122,63 @@
                             </span> <br>
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
-                            <select class="form-select d-inline-block mb-lg-0 mb-15 mw-200">
-                                <option id="1">Change status</option>
-                                <option id="2">Placed</option>
-                                <option id="3">Shipped</option>
-                                <option id="4">Out for delivery</option>
-                                <option id="5">Delivered</option>
-                            </select>
-                            <a class="btn btn-primary" href="#">Save</a>
-                            <a class="btn btn-secondary print ms-2" href="#"><i
-                                    class="icon material-icons md-print"></i></a>
+                                    
+
+                            <form class="form">
+                                <div class="switch-field">
+                                    {{#if order.shipmentStatus.delivered.status}}
+                                    {{#if order.shipmentStatus.outForDelivery.status}}
+                                    {{#if order.shipmentStatus.shipped.status}}
+                                    {{#if order.shipmentStatus.orderPlaced.status}}
+                                    <input type="radio" id="radio-three" name="switch-two" onclick="changeOrderStatus('{{order._id}}',1)"/>
+                                    <label for="radio-three">Placed</label>
+                                    <input type="radio" id="radio-four" name="switch-two" onclick="changeOrderStatus('{{order._id}}',2)"/>
+                                    <label for="radio-four">Shipped</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)"/>
+                                    <label for="radio-five">Out for delivery</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)" checked/>
+                                    <label for="radio-five">Delivered</label> 
+                                    {{/if}}{{/if}}{{/if}}
+                                    {{else}}
+                                    {{#if order.shipmentStatus.outForDelivery.status}}
+                                    {{#if order.shipmentStatus.shipped.status}}
+                                    {{#if order.shipmentStatus.orderPlaced.status}}
+                                    <input type="radio" id="radio-three" name="switch-two" onclick="changeOrderStatus('{{order._id}}',1)"/>
+                                    <label for="radio-three">Placed</label>
+                                    <input type="radio" id="radio-four" name="switch-two" onclick="changeOrderStatus('{{order._id}}',2)"/>
+                                    <label for="radio-four">Shipped</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)" checked/>
+                                    <label for="radio-five">Out for delivery</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
+                                    <label for="radio-five">Delivered</label> 
+                                    {{/if}}{{/if}}
+                                    {{else}}
+                                    {{#if order.shipmentStatus.shipped.status}}
+                                    {{#if order.shipmentStatus.orderPlaced.status}}
+                                    <input type="radio" id="radio-three" name="switch-two" onclick="changeOrderStatus('{{order._id}}',1)"/>
+                                    <label for="radio-three">Placed</label>
+                                    <input type="radio" id="radio-four" name="switch-two" onclick="changeOrderStatus('{{order._id}}',2)" checked/>
+                                    <label for="radio-four">Shipped</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)"/>
+                                    <label for="radio-five">Out for delivery</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
+                                    <label for="radio-five">Delivered</label>
+                                    {{/if}}
+                                    {{else}}
+                                    <input type="radio" id="radio-three" name="switch-two" onclick="changeOrderStatus('{{order._id}}',1)" checked/>
+                                    <label for="radio-three">Placed</label>
+                                    <input type="radio" id="radio-four" name="switch-two" onclick="changeOrderStatus('{{order._id}}',2)"/>
+                                    <label for="radio-four">Shipped</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)"/>
+                                    <label for="radio-five">Out for delivery</label>
+                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
+                                    <label for="radio-five">Delivered</label>
+                                    {{/if}}
+                                    {{/if}}
+                                    {{/if}} 
+                                </div>
+                            </form>
+
                         </div>
                     </div>
                 </header> <!-- card-header end// -->
@@ -160,7 +208,29 @@
                                     <h6 class="mb-1">Order info</h6>
                                     <p class="mb-1">
                                         Shipping: Fargo express <br> Pay method: {{order.paymentMethod}}<br> Status:
-                                        {{order.paymentStatus}}
+                                    {{#if order.shipmentStatus.delivered.status}}
+                                    {{#if order.shipmentStatus.outForDelivery.status}}
+                                    {{#if order.shipmentStatus.shipped.status}}
+                                    {{#if order.shipmentStatus.orderPlaced.status}}
+                                    Delivered
+                                    {{/if}}{{/if}}{{/if}}
+                                    {{else}}
+                                    {{#if order.shipmentStatus.outForDelivery.status}}
+                                    {{#if order.shipmentStatus.shipped.status}}
+                                    {{#if order.shipmentStatus.orderPlaced.status}}
+                                    Out for delivery
+                                    {{/if}}{{/if}}
+                                    {{else}}
+                                    {{#if order.shipmentStatus.shipped.status}}
+                                    {{#if order.shipmentStatus.orderPlaced.status}}
+                                    Shipped
+                                    {{/if}}
+                                    {{else}}
+                                    Placed
+                                    {{/if}}
+                                    {{/if}}
+                                    {{/if}}
+                                        
                                     </p>
                                     <a href="#">Download info</a>
                                 </div>
@@ -278,6 +348,19 @@
             </div>
         </footer>
     </main>
+    <script>
+        function changeOrderStatus(orderId, status) {
+            $.ajax({
+                url: '/admin/change-order-status/' + orderId + '/' + status,
+                method: 'get',
+                success: (response) => {
+                    if (response.status) {
+                        location.reload();
+                    }
+                }
+            })
+        }
+    </script>
     <script src="admin/js/vendors/jquery-3.6.0.min.js"></script>
     <script src="admin/js/vendors/bootstrap.bundle.min.js"></script>
     <script src="admin/js/vendors/select2.min.js"></script>
@@ -285,5 +368,53 @@
     <script src="admin/js/vendors/jquery.fullscreen.min.js"></script>
     <!-- Main Script -->
     <script src="admin/js/main.js" type="text/javascript"></script>
+    <style>
+        .switch-field {
+	display: flex;
+	margin-bottom: 36px;
+	overflow: hidden;
+}
+
+.switch-field input {
+	position: absolute !important;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	width: 1px;
+	border: 0;
+	overflow: hidden;
+}
+
+.switch-field label {
+	background-color: #e4e4e4;
+	color: #000;
+	font-size: 14px;
+	line-height: 1;
+	text-align: center;
+	padding: 8px 16px;
+	margin-right: -1px;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3), 0 1px rgba(255, 255, 255, 0.1);
+	transition: all 0.1s ease-in-out;
+}
+
+.switch-field label:hover {
+	cursor: pointer;
+}
+
+.switch-field input:checked + label {
+	background-color: #207a6bd8;
+    color: #fff;
+	box-shadow: none;
+}
+
+.switch-field label:first-of-type {
+	border-radius: 4px 0 0 4px;
+}
+
+.switch-field label:last-of-type {
+	border-radius: 0 4px 4px 0;
+}
+    </style>
 </body>
+
 </html>

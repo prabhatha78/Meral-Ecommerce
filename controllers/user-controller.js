@@ -438,7 +438,7 @@ module.exports = {
                 orderStatus: orderStatus,
                 date: new Date().toString().slice(0, 16),
                 expectedDeliveryDate: expectedDeliveryDate.toString().slice(0, 16),
-                shipmentStatus: { ordrePlaced: { id: Date.now() + '-' + Math.round(Math.random() * 1E9), status: true, lastUpdate: { date: new Date().toString().slice(0, 21), placeUpdates: [] } } }
+                shipmentStatus: { orderPlaced: { status: true, lastUpdate: { date: new Date().toString().slice(0, 21)} } }
             }
 
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
