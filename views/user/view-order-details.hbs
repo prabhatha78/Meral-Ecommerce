@@ -1,77 +1,95 @@
 <script src="https://unpkg.com/easyinvoice/dist/easyinvoice.min.js"></script>
 
-<section class=" pt-5">
+<section class=" pt-5" style="background:#f1f1f1">
     <div class="container">
         <div>
             <div class="p-5 mt-5">
                 <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-md-12">
+                    <div class="col-md-12" >
                         <div class="card" style="border-radius: 10px;">
-                            <div class="card-body p-4">
+                            <div class="card-body p-4" style="background:transparent">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
-                                    <p class="lead fw-normal mb-0" style="color: #a8729a;">Order</p>
+                                    <p class="lead fw-normal mb-0" style="color: #073e09;">Order</p>
                                     <p class="small text-muted mb-0">Order ID :{{order._id}}</p>
                                 </div>
                                 {{#each products}}
                                 <div class="card shadow-0 border mb-4">
-                                    <div class="card-body">
+                                    <div class="card-body" style="box-shadow: 1px 1px 1px 1px black;">
                                         <div class="row">
                                             <div class="col-md-2">
                                                 <img src="/images/product-images/{{this.product.images.[0].filename}} "
                                                     class="img-fluid" alt="Phone">
                                             </div>
                                             <div
-                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                                <p class="text-muted mb-0">{{this.product.product_name}}</p>
+                                                class="col-md-3 text-center d-flex justify-content-center align-items-center">
+                                                <span>{{this.product.product_name}}</span>
                                             </div>
                                             <div
                                                 class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                                <p class="text-muted mb-0 small">Volume: {{this.product.volume}}</p>
-                                            </div>
-                                            {{!-- <div
-                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                                <p class="text-muted mb-0 small">Capacity: 64GB</p>
-                                            </div> --}}
-                                            <div
-                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                                <p class="text-muted mb-0 small">{{this.quantity}}</p>
+                                                <span>Volume: {{this.product.volume}}</span>
                                             </div>
                                             <div
                                                 class="col-md-2 text-center d-flex justify-content-center align-items-center">
-                                                <p class="text-muted mb-0 small">₹ {{this.product.promo_price}}</p>
+                                                <span>Quantity:{{this.quantity}}</span>
+                                            </div>
+                                            <div
+                                                class="col-md-2 text-center d-flex justify-content-center align-items-center">
+                                                <span>Price: ₹ {{this.product.promo_price}}</span>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                                 {{/each}}
                             </div>
-                            <div style="display:flex;flex-wrap:wrap-reverse">
+                            <div class="col-md-12" style="display:flex;flex-wrap:wrap;">
                                 <div class="col-md-6">
-                                    hjhkh
+                                    <section class="root mb-2">
+                                        <div class="order-track">
+                                            <h6>Order details:</h6>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Subtotal:</span>
+                                                <span>₹{{order.subtotal}}</span>
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                {{#if order.discount}}
+                                                <span>Discount({{order.coupon}}):</span>
+                                                <span>-₹{{order.discount}}({{order.discountrate}})</span>
+                                                {{/if}}
+                                            </div>
+                                            <div class="d-flex justify-content-between">
+                                                <span>Total:</span>
+                                                <span>₹{{order.total}}</span>
+                                            </div>
+                                            {{#if (eq order.shipmentStatus.delivered.status false)}}
+                                            {{#if (eq order.orderStatus "placed")}}
+                                            <button class="btn order-details mt-3" data-toggle="modal"
+                                                data-target="#cancelModal">
+                                                Cancel order
+                                            </button>
+                                            {{/if}}
+                                            {{/if}}
+                                        </div>
+                                    </section>
                                 </div>
                                 <div class="col-md-6">
-                                    <div class="d-flex pt-2">
-                                        <p class="fw-bold mb-0">Order Details</p>
-                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Total</span> ₹
-                                            {{order.total}}</p>
-                                    </div>
-
-                                    <div class="d-flex pt-2">
-                                        <p class="text-muted mb-0">Invoice Number : 788152</p>
-                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Discount</span> $19.00</p>
-                                    </div>
-
-                                    <div class="d-flex mb-5">
-                                        <p class="text-muted mb-0">Recepits Voucher : 18KU-62IIK</p>
-                                        <p class="text-muted mb-0"><span class="fw-bold me-4">Delivery Charges</span>
-                                            Free</p>
-                                    </div>
-                                    <div>
-                                    </div>
+                                    <section class="root">
+                                        <div class="order-track">
+                                            <h6>Transaction details:</h6>
+                                            <span>Payment Method: {{order.paymentMethod}}</span>
+                                            <span>Payment Status: {{order.paymentStatus}}</span>
+                                            {{#if order.shipmentStatus.delivered.status}}
+                                            <span>Invoice Number: {{order.paymentStatus}}</span>
+                                            <button onclick="getOrderDetails('{{order._id}}')"
+                                                class="btn order-details mt-3">Download Invoice
+                                            </button>
+                                            {{/if}}
+                                        </div>
+                                    </section>
                                 </div>
                             </div>
-                            <div style="display:flex; justify-content:space-around;flex-wrap:wrap-reverse; max-width:100%;">
-                                <div class="col-md-6">
+                            <div class="p-2"
+                                style="display:flex; justify-content:space-around;flex-wrap:wrap-reverse; max-width:100%;">
+                                <div class="col-md-6 mb-2">
                                     <section class="root">
                                         <div class="order-track">
                                             <div class="order-track-step">
@@ -81,20 +99,13 @@
                                                     <span class="order-success-line"></span>
                                                 </div>
                                                 <div class="order-track-text">
-                                                    <p class="order-track-text-stat">Order Received</p>
+                                                    <p class="order-track-text-stat">Order placed</p>
                                                     <span
                                                         class="order-track-text-sub">{{order.shipmentStatus.orderPlaced.lastUpdate.date}}</span>
                                                 </div>
-                                                {{else}}
-                                                <div class="order-track-status">
-                                                    <span class="order-track-status-dot"></span>
-                                                    <span class="order-track-status-line"></span>
-                                                </div>
-                                                <div class="order-track-text">
-
-                                                </div>
                                                 {{/if}}
                                             </div>
+                                            {{#if (eq order.orderStatus "placed")}}
                                             <div class="order-track-step">
                                                 {{#if order.shipmentStatus.shipped.status}}
                                                 <div class="order-track-status">
@@ -102,7 +113,7 @@
                                                     <span class="order-success-line"></span>
                                                 </div>
                                                 <div class="order-track-text">
-                                                    <p class="order-track-text-stat">Order shipped</p>
+                                                    <p class="order-track-text-stat">In transit</p>
                                                     <span
                                                         class="order-track-text-sub">{{order.shipmentStatus.shipped.lastUpdate.date}}</span>
                                                 </div>
@@ -123,7 +134,7 @@
                                                     <span class="order-success-line"></span>
                                                 </div>
                                                 <div class="order-track-text">
-                                                    <p class="order-track-text-stat">Order out for delivery</p>
+                                                    <p class="order-track-text-stat">Out for delivery</p>
                                                     <span
                                                         class="order-track-text-sub">{{order.shipmentStatus.outForDelivery.lastUpdate.date}}</span>
                                                 </div>
@@ -145,7 +156,7 @@
                                                     <span class="order-success-line"></span>
                                                 </div>
                                                 <div class="order-track-text">
-                                                    <p class="order-track-text-stat">Order delivered</p>
+                                                    <p class="order-track-text-stat">Delivered</p>
                                                     <span
                                                         class="order-track-text-sub">{{order.shipmentStatus.delivery.lastUpdate.date}}
                                                     </span>
@@ -160,31 +171,38 @@
                                                 </div>
                                                 {{/if}}
                                             </div>
+                                            {{else}}
+                                            <div class="order-track-step">
+                                                <div class="order-track-status">
+                                                    <span class="order-cancel-dot"></span>
+                                                    <span class="order-cancel-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+                                                    <p class="order-track-text-stat">Order cancelled</p>
+                                                    <span class="order-track-text-sub">{{order.cancelDate}}
+                                                    </span>
+                                                </div>
+                                            </div>
+                                            {{/if}}
                                         </div>
                                     </section>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="col-md-6 mb-2">
                                     <section class="root">
-                                       <div class="order-track">
-                                         <h6>Delivery details:</h6>
-                                    {{order.deliveryDetails.address.line1}}, <br>
-                                    {{order.deliveryDetails.address.line2}}, <br>
-                                    {{order.deliveryDetails.address.landmark}}, <br>
-                                    {{order.deliveryDetails.address.citystate}}- {{order.deliveryDetails.address.zip}}
-                                    <br>
-                                    +91-{{order.deliveryDetails.mobile}}
-                                       </div>
+                                        <div class="order-track">
+                                            <h6>Delivery details:</h6>
+                                            {{order.deliveryDetails.address.line1}}, <br>
+                                            {{order.deliveryDetails.address.line2}}, <br>
+                                            {{order.deliveryDetails.address.landmark}}, <br>
+                                            {{order.deliveryDetails.address.citystate}}-
+                                            {{order.deliveryDetails.address.zip}}
+                                            <br>
+                                            +91-{{order.deliveryDetails.mobile}}
+                                        </div>
                                     </section>
                                 </div>
                             </div>
 
-                        </div>
-                        <div class="card-footer border-0 px-4 py-5"
-                            style="background-color: #a8729a; border-bottom-left-radius: 10px; border-bottom-right-radius: 10px;">
-
-                            <button onclick="getOrderDetails('{{order._id}}')"
-                                class="btn btn-outline-primary mt-3">Download
-                            </button>
                         </div>
                     </div>
                 </div>
@@ -193,6 +211,27 @@
     </div>
     </div>
 </section>
+
+<!--Cancel Modal -->
+<div class="modal fade" id="cancelModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span
+                        aria-hidden="true">&times;</span></button>
+                <!--           <h4 class="modal-title" id="myModalLabel">Modal title</h4> -->
+            </div>
+            <div class="modal-body">
+                <h4>Are you sure you want to cancel the order?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-main" onclick="cancelOrder('{{order._id}}')">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
 <script>
     function getOrderDetails(orderId) {
         $.ajax({
@@ -217,12 +256,34 @@
         }
 
     }
+
+
+
+    function cancelOrder(orderId) {
+        $.ajax({
+            url: '/cancel-order/' + orderId,
+            method: 'get',
+            success: ((response) => {
+                if (response.status) {
+                    location.reload()
+                }
+            })
+        })
+    }
 </script>
 <style>
+    .order-details {
+        color: #fff;
+        background-color: #000;
+        border-color: #000;
+    }
+
     .root {
-        padding:1rem 0;
+        background-color: #f1f1f1;
+        padding: 1rem 0;
         border-radius: 5px;
         border: 1px solid rgba(0, 0, 0, 0.574);
+        box-shadow: 1px 1px 1px 1px black;
     }
 
     .order-track {
@@ -250,7 +311,7 @@
         width: 1.2rem;
         height: 1.2rem;
         border-radius: 50%;
-        background: #686666;
+        background: #8b8787;
     }
 
     .order-success-dot {
@@ -258,7 +319,15 @@
         width: 1.2rem;
         height: 1.2rem;
         border-radius: 50%;
-        background: #07331c;
+        background: #084f1a;
+    }
+
+    .order-cancel-dot {
+        display: block;
+        width: 1.2rem;
+        height: 1.2rem;
+        border-radius: 50%;
+        background: #7b0e0e;
     }
 
     .order-track-status-line {
@@ -266,7 +335,7 @@
         margin: 0 auto;
         width: 2px;
         height: 5rem;
-        background: #686666;
+        background: #878585;
     }
 
     .order-success-line {
@@ -274,7 +343,15 @@
         margin: 0 auto;
         width: 2px;
         height: 5rem;
-        background: #07331c;
+        background: #084f1a;
+    }
+
+    .order-cancel-line {
+        display: block;
+        margin: 0 auto;
+        width: 2px;
+        height: 5rem;
+        background: #7b0e0e;
     }
 
     .order-track-text-stat {
@@ -291,5 +368,45 @@
     .order-track {
         transition: all 0.3s height 0.3s;
         transform-origin: top center;
+    }
+</style>
+
+<style>
+    .btn-main {
+        background-color: #631f27;
+        border: none;
+        color: white;
+        padding: .5em 1.75em;
+    }
+
+    .btn-default {
+        background-color: #474b51;
+        border: none;
+        color: #f1f1f1;
+        padding: .5em 1.75em;
+        margin-right: 1.5em;
+    }
+
+    .modal-dialog {
+        margin: 100px auto;
+    }
+
+    .modal-header {
+        border-bottom: transparent;
+        padding: 1em 1em;
+    }
+
+    .modal-content {
+        background-color: #d8d8d8;
+    }
+
+    .modal-body {
+        padding: 0em 4em;
+        margin-top: -.5em;
+    }
+
+    .modal-footer {
+        border-top: transparent;
+        padding: 1.5em 3em 2.5em 0em;
     }
 </style>

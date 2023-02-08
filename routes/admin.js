@@ -9,7 +9,7 @@ const deleteImage = require('../controllers/delete-controller')
 /* GET admin page. */
 router.get('/', function (req, res, next) {
     if (req.session.adminloggedIn) {
-        res.redirect('/admin/dashboard', { admin: true })
+        res.render('admin/dashboard', { admin: true })
     } else {
         res.render('admin/admin-login', { erro: req.session.adminloginErr, admin: true })
         req.session.adminloginErr = false

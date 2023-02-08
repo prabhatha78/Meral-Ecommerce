@@ -107,59 +107,59 @@ router.get('/shop', async (req, res) => {
 })
 
 
-router.get('/category',async function (req, res) {
+router.get('/category', async function (req, res) {
   const category = await adminController.getAllCategory()
-  if(req.session.user){
-     const cartCount = await usercontroller.getCartCount(req.session.user._id)
-  res.render('user/category', { category, user: req.session.user,cartCount })
+  if (req.session.user) {
+    const cartCount = await usercontroller.getCartCount(req.session.user._id)
+    res.render('user/category', { category, user: req.session.user, cartCount })
   } else {
-    res.render('user/category', { category})
+    res.render('user/category', { category })
   }
 })
 
 
-router.get('/ingredient',async function (req, res) {
+router.get('/ingredient', async function (req, res) {
   const ingredient = await adminController.getAllIngredient()
-  if(req.session.user){
-  const cartCount = await usercontroller.getCartCount(req.session.user._id)
-  res.render('user/ingredient', { ingredient, user: req.session.user, cartCount })
+  if (req.session.user) {
+    const cartCount = await usercontroller.getCartCount(req.session.user._id)
+    res.render('user/ingredient', { ingredient, user: req.session.user, cartCount })
   } else {
-  res.render('user/ingredient', {ingredient})
+    res.render('user/ingredient', { ingredient })
   }
 })
 
 
-router.get('/cat_based_list/:id',async function (req, res) {
+router.get('/cat_based_list/:id', async function (req, res) {
   const category = await adminController.getCategory(req.params.id)
   const product = await usercontroller.productCategory(req.params.id)
-  if(req.session.user){
-  const cartCount = await usercontroller.getCartCount(req.session.user._id)
-  res.render('user/cat_based_list', { user: req.session.user, category, product, cartCount })
+  if (req.session.user) {
+    const cartCount = await usercontroller.getCartCount(req.session.user._id)
+    res.render('user/cat_based_list', { user: req.session.user, category, product, cartCount })
   } else {
-  res.render('user/cat_based_list', {category, product})
+    res.render('user/cat_based_list', { category, product })
   }
 })
 
-router.get('/ing_based_list/:id',async function (req, res) {
+router.get('/ing_based_list/:id', async function (req, res) {
   const ingredient = await adminController.getIngredient(req.params.id)
   const product = await usercontroller.productIngredient(req.params.id)
-  if(req.session.user){
-  const cartCount = await usercontroller.getCartCount(req.session.user._id)
-  res.render('user/ing_based_list', { user: req.session.user, ingredient, product, cartCount })
+  if (req.session.user) {
+    const cartCount = await usercontroller.getCartCount(req.session.user._id)
+    res.render('user/ing_based_list', { user: req.session.user, ingredient, product, cartCount })
   } else {
-  res.render('user/ing_based_list', {ingredient, product})
+    res.render('user/ing_based_list', { ingredient, product })
   }
 })
 
 router.get('/product/:id', async function (req, res) {
   const product = await usercontroller.displayProduct(req.params.id)
-  if(req.session.user){
-  const cartCount = await usercontroller.getCartCount(req.session.user._id)
-  const wishlistStatus = await usercontroller.checkWishlist(req.params.id, req.session.user._id)
-  const cartStatus = await usercontroller.checkCart(req.session.user._id,req.params.id)
-  res.render('user/product', { user: req.session.user, product, cartCount, wishlistStatus,cartStatus })
+  if (req.session.user) {
+    const cartCount = await usercontroller.getCartCount(req.session.user._id)
+    const wishlistStatus = await usercontroller.checkWishlist(req.params.id, req.session.user._id)
+    const cartStatus = await usercontroller.checkCart(req.session.user._id, req.params.id)
+    res.render('user/product', { user: req.session.user, product, cartCount, wishlistStatus, cartStatus })
   } else {
-  res.render('user/product', {product})
+    res.render('user/product', { product })
   }
 })
 
@@ -173,8 +173,8 @@ router.get('/cart', verifyLogin, async function (req, res) {
 
 router.post('/add-to-cart/', verifyLogin, (req, res) => {
   usercontroller.addToCart(req.body, req.session.user._id).then(() => {
-    usercontroller.addToInvoice(req.body,req.session.user._id).then(()=>{
-    res.json({ status: true })
+    usercontroller.addToInvoice(req.body, req.session.user._id).then(() => {
+      res.json({ status: true })
     })
   })
 
@@ -182,8 +182,8 @@ router.post('/add-to-cart/', verifyLogin, (req, res) => {
 
 router.post('/change-product-quantity/', verifyLogin, async (req, res) => {
   usercontroller.changeInvoiceQuantity(req.body).then((response) => {
-    usercontroller.changeProductQuantity(req.body).then((response)=>{
-    res.json(response)
+    usercontroller.changeProductQuantity(req.body).then((response) => {
+      res.json(response)
     })
   })
 })
@@ -204,16 +204,16 @@ router.get('/checkout', verifyLogin, async (req, res) => {
 
 
 
-router.post('/checkout',verifyLogin, async (req, res) => {
+router.post('/checkout', verifyLogin, async (req, res) => {
   const cartItems = await usercontroller.getCartProducts(req.session.user._id)
   const cart = await usercontroller.getCart(req.session.user._id)
   const user = await usercontroller.getAddress(req.body.addressId, req.session.user._id);
   let total = cart.finalTotal
   console.log(user);
-  usercontroller.placeOrder(req.body,user, cart.products, cart).then((orderId) => {
+  usercontroller.placeOrder(req.body, user, cart.products, cart).then((orderId) => {
     console.log(orderId);
     if (req.body.paymentMethod === 'COD') {
-      usercontroller.changeOrderStatus(orderId,cart._id)
+      usercontroller.changeOrderStatus(orderId, cart._id)
       res.json({ codSuccess: true })
     } else {
       usercontroller.generateRazorPay(orderId, total).then((response) => {
@@ -223,13 +223,19 @@ router.post('/checkout',verifyLogin, async (req, res) => {
   })
 })
 
-router.post('/add-new-address',verifyLogin, async (req, res) => {
+router.post('/add-new-address', verifyLogin, async (req, res) => {
   usercontroller.addAddress(req.body, req.session.user._id).then(() => {
     res.redirect('/checkout');
   })
 })
 
-router.post('/apply-coupon',verifyLogin, async (req, res) => {
+router.post('/add-latest-address', verifyLogin, async (req, res) => {
+  usercontroller.addAddress(req.body, req.session.user._id).then(() => {
+    res.redirect('/address');
+  })
+})
+
+router.post('/apply-coupon', verifyLogin, async (req, res) => {
   const cart = await usercontroller.getCart(req.session.user._id)
   const total = cart.finalTotal
   usercontroller.applyCoupon(req.body, req.session.user._id, total).then((response) => {
@@ -241,7 +247,7 @@ router.post('/apply-coupon',verifyLogin, async (req, res) => {
   })
 })
 
-router.post('/remove-coupon',verifyLogin, async (req, res) => {
+router.post('/remove-coupon', verifyLogin, async (req, res) => {
   const cart = await usercontroller.getCart(req.session.user._id)
   const total = cart.finalTotal
   usercontroller.removeCoupon(req.body, req.session.user._id, total).then((response) => {
@@ -253,7 +259,7 @@ router.post('/remove-coupon',verifyLogin, async (req, res) => {
   })
 })
 
-router.get('/order-success',verifyLogin, (req, res) => {
+router.get('/order-success', verifyLogin, (req, res) => {
   res.render('user/order-success', { user: req.session.user })
 })
 
@@ -262,16 +268,16 @@ router.get('/orders', async (req, res) => {
   res.render('user/orders', { user: req.session.user, orders })
 })
 
-router.get('/view-order-details/:id', verifyLogin,async (req, res) => {
+router.get('/view-order-details/:id', verifyLogin, async (req, res) => {
   const order = await usercontroller.getOrder(req.params.id)
   const products = await usercontroller.getOrderProducts(req.params.id)
   res.render('user/view-order-details', { user: req.session.user, products, order })
 })
 
 
-router.post('/verify-payment',verifyLogin,(req, res) => {
+router.post('/verify-payment', verifyLogin, (req, res) => {
   usercontroller.verifyPayment(req.body).then(() => {
-    usercontroller.changeOrderStatus(req.body['order[receipt]'],req.session.user._id).then(() => {
+    usercontroller.changeOrderStatus(req.body['order[receipt]'], req.session.user._id).then(() => {
       console.log('Payment successfull');
       res.json({ status: true })
     })
@@ -317,17 +323,52 @@ router.post('/update-profile', verifyLogin, (req, res) => {
 
 router.get('/invoice/:id', verifyLogin, (req, res) => {
   usercontroller.getOrder(req.params.id).then(async (order) => {
-   let invoiceDetails = await usercontroller.invoiceDetails(req.params.id)
-    let invoice =await getInvoice(order,invoiceDetails);
+    let invoiceDetails = await usercontroller.invoiceDetails(req.params.id)
+    let invoice = await getInvoice(order, invoiceDetails);
     res.json({ status: true, invoice })
   })
-  // res.json({status:true,data:invoice})
 })
 
-router.get('/address',verifyLogin,async(req,res)=>{
+router.get('/address', verifyLogin, async (req, res) => {
   let user = await usercontroller.getUser(req.session.user._id)
-  res.render('user/address',{user})
+  res.render('user/address', { user })
 })
+
+router.get('/cancel-order/:id', verifyLogin, (req, res) => {
+  usercontroller.cancelOrder(req.params.id).then((response) => {
+    res.json({ status: true })
+  })
+})
+
+router.post('/change-password', verifyLogin, (req, res) => {
+  usercontroller.changePassword(req.session.user._id, req.body).then((response) => {
+    if (response.changePassword) {
+      res.json({ changePassword: true })
+    } else if (response.enterPassword) {
+      res.json({ enterPassword: true })
+    }
+    else if (response.minimumlength) {
+      res.json({ minimumlength: true })
+    } else if (response.mismatch) {
+      res.json({ mismatch: true })
+    } else if(response.failed) {
+      res.json({failed:true})
+    }
+  })
+})
+
+router.get('/delete-address/:id',verifyLogin,(req,res)=>{
+  usercontroller.deleteAddress(req.params.id,req.session.user._id).then((response)=>{
+    res.json({status:true})
+  })
+})
+
+router.post('/edit-address',verifyLogin,(req,res)=>{
+  usercontroller.editAddress(req.session.user._id,req.body).then((response)=>{
+    res.redirect('/address')
+  })
+})
+
 
 
 

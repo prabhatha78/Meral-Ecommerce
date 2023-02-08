@@ -342,7 +342,8 @@ module.exports = {
                         'shipmentStatus.orderPlaced.status': true,
                         'shipmentStatus.shipped.status': true,
                         'shipmentStatus.outForDelivery.status': true,
-                        'shipmentStatus.delivered': obj
+                        'shipmentStatus.delivered': obj,
+                        paymentStatus: 'Paid'
                     }
                 }).then((response) => { 
                     resolve(response) })
