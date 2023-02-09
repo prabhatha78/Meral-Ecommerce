@@ -77,10 +77,10 @@ router.get('/category-list', verifyAdmin, function (req, res) {
 router.post('/add-category', verifyAdmin, uploadCategory, function (req, res) {
     req.body.image = req.files.image;
     adminController.addCategory(req.body).then((response) => {
+        
         if (response.categoryExist) {
             req.session.categoryExist = true
             res.redirect('/admin/category-list');
-
         } else {
             res.redirect('/admin/category-list');
         }

@@ -39,7 +39,7 @@ module.exports = {
                 resolve({ categoryExist: true })
             } else {
                 db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
-                    resolve(data._id)
+                    resolve({categoryExist:false})
                 })
             }
         })
@@ -90,7 +90,7 @@ module.exports = {
                 resolve({ingredientExist:true})
             } else {
                 db.get().collection(collection.INGREDIENT_COLLECTION).insertOne(ingredient).then((data) => {
-                    resolve(data._id)
+                    resolve({ingredientExist:false})
                 }) 
             }
             
