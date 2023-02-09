@@ -208,6 +208,7 @@ router.get('/checkout', verifyUser, async (req, res) => {
 router.post('/checkout', verifyUser, async (req, res) => {
   const cartItems = await usercontroller.getCartProducts(req.session.user._id)
   const cart = await usercontroller.getCart(req.session.user._id)
+  const cartCount = await usercontroller.getCartCount(user._id)
   const user = await usercontroller.getAddress(req.body.addressId, req.session.user._id);
   let total = cart.finalTotal
   console.log(user);
@@ -294,7 +295,9 @@ router.get('/coupons',async (req, res) => {
     res.render('user/coupons', { user: req.session.user, coupon, cartCount })
     })
   } else {
+    usercontroller.getAllCoupon().then((coupon)=>{
     res.render('user/coupons', { coupon })
+    })
   }
 })
 

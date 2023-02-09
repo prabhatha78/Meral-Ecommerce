@@ -437,13 +437,12 @@ module.exports = {
                 discountrate: cart.discount,
                 total: cart.finalTotal,
                 orderStatus: orderStatus,
+                orderDate: new Date().toString().slice(0, 16),
                 monthInNo: new Date().getMonth()+1,
                 month: month[new Date().getMonth()],
                 expectedDeliveryDate: expectedDeliveryDate.toString().slice(0, 16),
                 shipmentStatus: {
-                    orderPlaced: { status: true, date: new Date().toString().slice(0, 16) },
-                    delivered: { status: false }
-                }
+                    orderPlaced: { status: true, lastUpdate: { date: new Date().toString().slice(0, 21) }}}
             }
 
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {

@@ -5,7 +5,7 @@
         <div>
             <div class="p-5 mt-5">
                 <div class="row d-flex justify-content-center align-items-center h-100">
-                    <div class="col-md-12" >
+                    <div class="col-md-12">
                         <div class="card" style="border-radius: 10px;">
                             <div class="card-body p-4" style="background:transparent">
                                 <div class="d-flex justify-content-between align-items-center mb-4">
@@ -103,6 +103,14 @@
                                                     <span
                                                         class="order-track-text-sub">{{order.shipmentStatus.orderPlaced.lastUpdate.date}}</span>
                                                 </div>
+                                                {{else}}
+                                                <div class="order-track-status">
+                                                    <span class="order-track-status-dot"></span>
+                                                    <span class="order-track-status-line"></span>
+                                                </div>
+                                                <div class="order-track-text">
+
+                                                </div>
                                                 {{/if}}
                                             </div>
                                             {{#if (eq order.orderStatus "placed")}}
@@ -111,6 +119,7 @@
                                                 <div class="order-track-status">
                                                     <span class="order-success-dot"></span>
                                                     <span class="order-success-line"></span>
+
                                                 </div>
                                                 <div class="order-track-text">
                                                     <p class="order-track-text-stat">In transit</p>
@@ -150,7 +159,7 @@
                                             </div>
                                             <div class="order-track-step">
 
-                                                {{#if order.shipmentStatus.delivery.status}}
+                                                {{#if order.shipmentStatus.delivered.status}}
                                                 <div class="order-track-status">
                                                     <span class="order-success-dot"></span>
                                                     <span class="order-success-line"></span>
@@ -158,7 +167,7 @@
                                                 <div class="order-track-text">
                                                     <p class="order-track-text-stat">Delivered</p>
                                                     <span
-                                                        class="order-track-text-sub">{{order.shipmentStatus.delivery.lastUpdate.date}}
+                                                        class="order-track-text-sub">{{order.shipmentStatus.delivered.lastUpdate.date}}
                                                     </span>
                                                 </div>
                                                 {{else}}

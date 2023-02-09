@@ -102,9 +102,6 @@
                     <h2 class="content-title card-title">Categories </h2>
                     <p>Add, edit or delete a category</p>
                 </div>
-                <div>
-                    <input type="text" placeholder="Search Categories" class="form-control bg-white">
-                </div>
             </div>
             <div class="card">
                 <div class="card-body">
@@ -112,6 +109,11 @@
                         <div class="col-md-3">
                             <form action="/admin/add-category" method="POST" enctype="multipart/form-data">
                                 <div class="mb-4">
+                                    {{#if err}}
+                                    <p style="font-size: 1rem;" id="wrong-password" class="text-danger">
+                                        Category already exist
+                                    </p>
+                                    {{/if}}
                                     <label for="category_name" class="form-label">Name</label>
                                     <input type="text" class="form-control" name="category_name" id="category_name" />
                                 </div>

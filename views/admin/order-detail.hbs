@@ -109,7 +109,7 @@
                     <div class="row align-items-center">
                         <div class="col-lg-6 col-md-6 mb-lg-0 mb-15">
                             <span>
-                                <i class="material-icons md-calendar_today"></i> <b>{{order.date}}</b>
+                                <i class="material-icons md-calendar_today"></i> <b>{{order.orderDate}}</b>
                             </span> <br>
                         </div>
                         <div class="col-lg-6 col-md-6 ms-auto text-md-end">
@@ -127,8 +127,8 @@
                                     <label for="radio-four">Shipped</label>
                                     <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)"/>
                                     <label for="radio-five">Out for delivery</label>
-                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)" checked/>
-                                    <label for="radio-five">Delivered</label> 
+                                    <input type="radio" id="radio-six" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)" checked/>
+                                    <label for="radio-six">Delivered</label> 
                                     {{/if}}{{/if}}{{/if}}
                                     {{else}}
                                     {{#if order.shipmentStatus.outForDelivery.status}}
@@ -140,8 +140,8 @@
                                     <label for="radio-four">Shipped</label>
                                     <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)" checked/>
                                     <label for="radio-five">Out for delivery</label>
-                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
-                                    <label for="radio-five">Delivered</label> 
+                                    <input type="radio" id="radio-six" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
+                                    <label for="radio-six">Delivered</label> 
                                     {{/if}}{{/if}}
                                     {{else}}
                                     {{#if order.shipmentStatus.shipped.status}}
@@ -152,8 +152,8 @@
                                     <label for="radio-four">Shipped</label>
                                     <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)"/>
                                     <label for="radio-five">Out for delivery</label>
-                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
-                                    <label for="radio-five">Delivered</label>
+                                    <input type="radio" id="radio-six" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
+                                    <label for="radio-six">Delivered</label>
                                     {{/if}}
                                     {{else}}
                                     <input type="radio" id="radio-three" name="switch-two" onclick="changeOrderStatus('{{order._id}}',1)" checked/>
@@ -162,8 +162,8 @@
                                     <label for="radio-four">Shipped</label>
                                     <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',3)"/>
                                     <label for="radio-five">Out for delivery</label>
-                                    <input type="radio" id="radio-five" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
-                                    <label for="radio-five">Delivered</label>
+                                    <input type="radio" id="radio-six" name="switch-two" onclick="changeOrderStatus('{{order._id}}',4)"/>
+                                    <label for="radio-six">Delivered</label>
                                     {{/if}}
                                     {{/if}}
                                     {{/if}} 
@@ -308,7 +308,7 @@
                                                         <dt class="text-muted">Payment:</dt>
                                                         <dd>
                                                             {{#if (eq order.orderStatus "placed")}}
-                                                            {{#if (eq order.paymentStatus "completed")}}
+                                                            {{#if (eq order.paymentStatus "Paid")}}
                                                             <span
                                                                 class="badge badge-pill badge-soft-success">Paid</span>
                                                             {{else}}
@@ -351,6 +351,7 @@
     </main>
     <script>
         function changeOrderStatus(orderId, status) {
+            console.log('>>',status)
             $.ajax({
                 url: '/admin/change-order-status/' + orderId + '/' + status,
                 method: 'get',

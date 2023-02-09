@@ -34,10 +34,14 @@ module.exports = {
 
     addCategory: (category) => {
         return new Promise(async (resolve, reject) => {
-            db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
-                resolve(data._id)
-            })
-            console.log(category)
+            let testcategory = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category_name: category.category_name })
+            if (testcategory) {
+                resolve({ categoryExist: true })
+            } else {
+                db.get().collection(collection.CATEGORY_COLLECTION).insertOne(category).then((data) => {
+                    resolve(data._id)
+                })
+            }
         })
     },
 
@@ -81,9 +85,15 @@ module.exports = {
 
     addIngredient: (ingredient) => {
         return new Promise(async (resolve, reject) => {
-            db.get().collection(collection.INGREDIENT_COLLECTION).insertOne(ingredient).then((data) => {
-                resolve(data._id)
-            })
+            let testingredient = await db.get().collection(collection.INGREDIENT_COLLECTION).findOne({ingredient_name:ingredient.ingredient_name})
+            if(testingredient){
+                resolve({ingredientExist:true})
+            } else {
+                db.get().collection(collection.INGREDIENT_COLLECTION).insertOne(ingredient).then((data) => {
+                    resolve(data._id)
+                }) 
+            }
+            
             console.log(ingredient)
         })
     },
@@ -293,16 +303,16 @@ module.exports = {
             let product = await db.get().collection(collection.PRODUCT_COLLECTION).find().count()
             let order = await db.get().collection(collection.ORDER_COLLECTION).find().count()
             let category = await db.get().collection(collection.CATEGORY_COLLECTION).find().count()
-            resolve({ product, order,category })
+            resolve({ product, order, category })
         })
     },
 
     changeOrderstatus: (orderId, status) => {
         let date = new Date().toString().slice(0, 21)
-        
+
         const obj = {
             status: true,
-            lastUpdate: { date: date}
+            lastUpdate: { date: date }
         }
         return new Promise((resolve, reject) => {
             if (status == 1) {
@@ -313,8 +323,9 @@ module.exports = {
                         'shipmentStatus.outForDelivery.status': false,
                         'shipmentStatus.delivered.status': false,
                     }
-                }).then((response) => { 
-                    resolve(response) })
+                }).then((response) => {
+                    resolve(response)
+                })
             } else if (status == 2) {
                 db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: ObjectId(orderId) }, {
                     $set: {
@@ -323,9 +334,9 @@ module.exports = {
                         'shipmentStatus.outForDelivery.status': false,
                         'shipmentStatus.delivered.status': false,
                     }
-                }).then((response) => { 
-                    console.log('22222');
-                    resolve(response) })
+                }).then((response) => {
+                    resolve(response)
+                })
             } else if (status == 3) {
                 db.get().collection(collection.ORDER_COLLECTION).updateOne({ _id: ObjectId(orderId) }, {
                     $set: {
@@ -343,15 +354,57 @@ module.exports = {
                         'shipmentStatus.outForDelivery.status': true,
                         'shipmentStatus.delivered': obj,
                         paymentStatus: 'Paid',
-                        orderStatus:'Delivered'
+                        deliveryStatus: 'delivered'
                     }
-                }).then((response) => { 
-                    resolve(response) })
+                }).then((response) => {
+                    resolve(response)
+                })
             }
         })
+    },
+
+
+    getOrdersByMonth: () => {
+        return new Promise(async (resolve) => {
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { "shipmentStatus.delivered.status": true }
+                },
+                {
+                    $group: {
+                        _id: "$monthInNo",
+                        total: { $sum: '$total' }
+                    }
+                },
+                {
+                    $sort: { _id: 1 }
+                }
+            ]).toArray()
+            let details = [];
+            orders.forEach(element => {
+                details.push(element.total)
+            });
+            console.log(details);
+            resolve(details)
+        })
+    },
+
+    getOrderTotal: () => {
+        return new Promise(async (resolve) => {
+            let orderTotal = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $group: {
+                        _id: null,
+                        total: { $sum: '$total' }
+                    }
+                },
+                {
+                    $project: { _id: 0, total: 1 }
+                }
+            ]).toArray()
+            resolve(orderTotal)
+        })
     }
-
-
 
 
 }
