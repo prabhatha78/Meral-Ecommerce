@@ -77,11 +77,12 @@ router.get('/category-list', verifyAdmin, function (req, res) {
 router.post('/add-category', verifyAdmin, uploadCategory, function (req, res) {
     req.body.image = req.files.image;
     adminController.addCategory(req.body).then((response) => {
-        
+
         if (response.categoryExist) {
             req.session.categoryExist = true
             res.redirect('/admin/category-list');
         } else {
+            req.session.categoryExist = false
             res.redirect('/admin/category-list');
         }
     })
@@ -123,6 +124,7 @@ router.post('/add-ingredient', verifyAdmin, uploadIngredient, function (req, res
             req.session.ingredientExist = true
             res.redirect('/admin/ingredient-list')
         } else {
+            req.session.ingredientExist = false
         res.redirect('/admin/ingredient-list')
         }
     })
