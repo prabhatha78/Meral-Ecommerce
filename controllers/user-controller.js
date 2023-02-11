@@ -118,9 +118,12 @@ module.exports = {
     },
 
 
-    productCategory: (catId) => {
+    productCategory: (catname) => {
+        console.log(catname);
         return new Promise(async (resolve, reject) => {
-            let product = await db.get().collection(collection.PRODUCT_COLLECTION).find({ category_id: catId }).toArray();
+            let category = await db.get().collection(collection.CATEGORY_COLLECTION).findOne({ category_name: catname })
+            let product = await db.get().collection(collection.PRODUCT_COLLECTION).find({ category: category.category_name }).toArray();
+            console.log(product);
             resolve(product)
 
         })
@@ -129,9 +132,10 @@ module.exports = {
 
 
 
-    productIngredient: (ingId) => {
+    productIngredient: (ingrename) => {
         return new Promise(async (resolve, reject) => {
-            let product = await db.get().collection(collection.PRODUCT_COLLECTION).find({ ingredient_id: ingId }).toArray();
+            let ingredient = await db.get().collection(collection.INGREDIENT_COLLECTION).findOne({ ingredient_name: ingrename })
+            let product = await db.get().collection(collection.PRODUCT_COLLECTION).find({ ingredient: ingredient.ingredient_name }).toArray();
             resolve(product)
 
         })
@@ -321,33 +325,38 @@ module.exports = {
         details.quantity = parseInt(details.quantity)
         let product = await db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: ObjectId(details.product) })
         let price = parseInt(product.promo_price)
+        console.log(product.quantity);
         return new Promise((resolve, reject) => {
-            if (details.count == -1 && details.quantity == 1) {
-                db.get().collection(collection.CART_COLLECTION)
-                    .updateOne({ _id: ObjectId(details.cart) },
-                        {
-                            $inc: { 'total': -price, 'finalTotal': -price },
-                            $pull: { products: { item: ObjectId(details.product) } }
-                        }
-                    ).then(() => {
-                        resolve({ removeProduct: true })
-                    })
-
-            } else {
-                db.get().collection(collection.CART_COLLECTION)
-                    .updateOne({ _id: ObjectId(details.cart), 'products.item': ObjectId(details.product) },
-                        {
-                            $inc: {
-                                'products.$.quantity': details.count,
-                                'products.$.price': price * details.count,
-                                'total': price * details.count,
-                                'finalTotal': price * details.count
-
-                            }
-                        }).then((response) => {
-                            resolve(true)
-                        })
-            }
+                if(details.quantity<product.quantity || details.count == -1){
+                    if (details.count == -1 && details.quantity == 1) {
+                        db.get().collection(collection.CART_COLLECTION)
+                            .updateOne({ _id: ObjectId(details.cart) },
+                                {
+                                    $inc: { 'total': -price, 'finalTotal': -price },
+                                    $pull: { products: { item: ObjectId(details.product) } }
+                                }
+                            ).then(() => {
+                                resolve({ removeProduct: true })
+                            })
+    
+                    } else {
+                        db.get().collection(collection.CART_COLLECTION)
+                            .updateOne({ _id: ObjectId(details.cart), 'products.item': ObjectId(details.product) },
+                                {
+                                    $inc: {
+                                        'products.$.quantity': details.count,
+                                        'products.$.price': price * details.count,
+                                        'total': price * details.count,
+                                        'finalTotal': price * details.count
+    
+                                    }
+                                }).then((response) => {
+                                    resolve(true)
+                                })
+                    }
+                } else {
+                    resolve({warning:true})
+                }
 
         })
     },
@@ -438,11 +447,12 @@ module.exports = {
                 total: cart.finalTotal,
                 orderStatus: orderStatus,
                 orderDate: new Date().toString().slice(0, 16),
-                monthInNo: new Date().getMonth()+1,
+                monthInNo: new Date().getMonth() + 1,
                 month: month[new Date().getMonth()],
                 expectedDeliveryDate: expectedDeliveryDate.toString().slice(0, 16),
                 shipmentStatus: {
-                    orderPlaced: { status: true, lastUpdate: { date: new Date().toString().slice(0, 21) }}}
+                    orderPlaced: { status: true, lastUpdate: { date: new Date().toString().slice(0, 21) } }
+                }
             }
 
             db.get().collection(collection.ORDER_COLLECTION).insertOne(orderObj).then((response) => {
@@ -465,14 +475,6 @@ module.exports = {
             resolve(invoice)
         })
     },
-
-    // getOrder: (userId) => {
-    //     return new Promise(async (resolve, reject) => {
-    //         let orders = await db.get().collection(collection.ORDER_COLLECTION).find({ userId: ObjectId(userId) }).toArray()
-    //         resolve(orders)
-    //     })
-    // },
-
 
     getOrderProducts: (orderId) => {
         return new Promise(async (resolve, reject) => {
@@ -607,21 +609,6 @@ module.exports = {
 
         })
     },
-
-    // changePaymentStatus: (orderId) => {
-    //     return new Promise((resolve, reject) => {
-    //         db.get().collection(collection.ORDER_COLLECTION)
-    //             .updateOne({ _id: ObjectId(orderId) },
-    //                 {
-    //                     $set: {
-    //                         paymentStatus: 'completed'
-    //                     }
-    //                 }).then(() => {
-    //                     resolve()
-    //                 })
-    //     })
-    // },
-
 
     getAllCoupon: () => {
         return new Promise(async (resolve, reject) => {
@@ -784,37 +771,37 @@ module.exports = {
         }))
     },
 
-    changePassword: (userId,data) => {
+    changePassword: (userId, data) => {
         return new Promise(async (resolve, reject) => {
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ _id: ObjectId(userId) })
             oldPassword = data.oldPassword
             newPassword1 = data.newPassword1
-            newPassword2= data.newPassword2
+            newPassword2 = data.newPassword2
             data.oldPassword = await bcrypt.hash(data.oldPassword, 10)
             data.newPassword1 = await bcrypt.hash(data.newPassword1, 10)
             data.newPassword2 = await bcrypt.hash(data.newPassword2, 10)
             bcrypt.compare(oldPassword, user.password).then((response) => {
                 if (response) {
-                    if(newPassword1 ===''){
-                        resolve({enterPassword:true})
-                    } else if(newPassword1.length < 8){
-                        resolve({minimumlength:true})
-                    } else if(newPassword1 !== newPassword2 ){
-                        resolve({mismatch:true})
+                    if (newPassword1 === '') {
+                        resolve({ enterPassword: true })
+                    } else if (newPassword1.length < 8) {
+                        resolve({ minimumlength: true })
+                    } else if (newPassword1 !== newPassword2) {
+                        resolve({ mismatch: true })
                     } else {
                         db.get().collection(collection.USER_COLLECTION)
-                        .updateOne({_id:ObjectId(userId)},
-                        {
-                            $set:{
-                                password: data.newPassword1,
-                                password2: data.newPassword2
-                            }
-                        }).then((response)=>{
-                        resolve({changePassword:true})
-                        })
+                            .updateOne({ _id: ObjectId(userId) },
+                                {
+                                    $set: {
+                                        password: data.newPassword1,
+                                        password2: data.newPassword2
+                                    }
+                                }).then((response) => {
+                                    resolve({ changePassword: true })
+                                })
                     }
                 } else {
-                    resolve({failed:true})
+                    resolve({ failed: true })
                 }
             })
 
@@ -822,37 +809,37 @@ module.exports = {
     },
 
 
-    deleteAddress:(addressId,userId)=>{
-        return new Promise(async (resolve,reject)=>{
+    deleteAddress: (addressId, userId) => {
+        return new Promise(async (resolve, reject) => {
             db.get().collection(collection.USER_COLLECTION)
-            .updateOne({_id:ObjectId(userId)},
-            {
-                $pull:{
-                    address: {id:ObjectId(addressId)}
-                }
-            }).then((response)=>{
-                resolve(response)
-            })
+                .updateOne({ _id: ObjectId(userId) },
+                    {
+                        $pull: {
+                            address: { id: ObjectId(addressId) }
+                        }
+                    }).then((response) => {
+                        resolve(response)
+                    })
         })
     },
 
-    editAddress:(userId,address)=>{
-        return new Promise(async(resolve,reject)=>{
+    editAddress: (userId, address) => {
+        return new Promise(async (resolve, reject) => {
             db.get().collection(collection.USER_COLLECTION)
-            .updateOne({_id:ObjectId(userId),'address.id':ObjectId(address.id)},
-            {
-                $set:{
-                    "address.$.fname": address.fname,
-                    "address.$.lname": address.lname,
-                    "address.$.line1": address.line1,
-                    "address.$.line2": address.line2,
-                    "address.$.landmark": address.landmark,
-                    "address.$.zip": address.landmark,
-                    "address.$.citystate": address.citystate
-                }
-            }).then((response)=>{
-                resolve()
-            })
+                .updateOne({ _id: ObjectId(userId), 'address.id': ObjectId(address.id) },
+                    {
+                        $set: {
+                            "address.$.fname": address.fname,
+                            "address.$.lname": address.lname,
+                            "address.$.line1": address.line1,
+                            "address.$.line2": address.line2,
+                            "address.$.landmark": address.landmark,
+                            "address.$.zip": address.landmark,
+                            "address.$.citystate": address.citystate
+                        }
+                    }).then((response) => {
+                        resolve()
+                    })
         })
     }
 

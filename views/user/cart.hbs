@@ -106,6 +106,12 @@
             success: (response) => {
                 if (response.removeProduct) {
                     location.reload()
+                } else if (response.warning) {
+                    swal(
+                        'Warning!',
+                        'You exceeded the quantity limit!',
+                        'warning'
+                    )
                 } else {
                     document.getElementById(cartId).innerHTML = total + (price * count / quantity)
                     document.getElementById(proId).innerHTML = quantity + count

@@ -267,8 +267,8 @@ p {
   transform: translate(-40%, -40%);
   text-decoration: none;
   color: #F8F4EA;
-  font-size: 25px;
   font-weight: bold;
+  font-size: 2vw;
 }
 
 .sub-category a:hover {
@@ -402,7 +402,7 @@ p {
 .list-head p {
   font-family: 'brush script M7';
   font-style: italic;
-  color: #bdb8b8;
+  color: #000;
   font-size: 100%;
 }
 

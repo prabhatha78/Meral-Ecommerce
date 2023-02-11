@@ -130,9 +130,9 @@ router.get('/ingredient', async function (req, res) {
 })
 
 
-router.get('/cat_based_list/:id', async function (req, res) {
-  const category = await adminController.getCategory(req.params.id)
-  const product = await usercontroller.productCategory(req.params.id)
+router.get('/cat_based_list/:name', async function (req, res) {
+  const category = await adminController.getCategory(req.params.name)
+  const product = await usercontroller.productCategory(req.params.name)
   if (req.session.user) {
     const cartCount = await usercontroller.getCartCount(req.session.user._id)
     res.render('user/cat_based_list', { user: req.session.user, category, product, cartCount })
@@ -141,9 +141,9 @@ router.get('/cat_based_list/:id', async function (req, res) {
   }
 })
 
-router.get('/ing_based_list/:id', async function (req, res) {
-  const ingredient = await adminController.getIngredient(req.params.id)
-  const product = await usercontroller.productIngredient(req.params.id)
+router.get('/ing_based_list/:name', async function (req, res) {
+  const ingredient = await adminController.getIngredient(req.params.name)
+  const product = await usercontroller.productIngredient(req.params.name)
   if (req.session.user) {
     const cartCount = await usercontroller.getCartCount(req.session.user._id)
     res.render('user/ing_based_list', { user: req.session.user, ingredient, product, cartCount })
@@ -181,10 +181,15 @@ router.post('/add-to-cart/', verifyUser, (req, res) => {
 
 })
 
+
 router.post('/change-product-quantity/', verifyUser, async (req, res) => {
   usercontroller.changeInvoiceQuantity(req.body).then((response) => {
     usercontroller.changeProductQuantity(req.body).then((response) => {
+      if(response.warning){
+        res.json({warning:true})
+      } else {
       res.json(response)
+      }
     })
   })
 })
@@ -208,7 +213,7 @@ router.get('/checkout', verifyUser, async (req, res) => {
 router.post('/checkout', verifyUser, async (req, res) => {
   const cartItems = await usercontroller.getCartProducts(req.session.user._id)
   const cart = await usercontroller.getCart(req.session.user._id)
-  const cartCount = await usercontroller.getCartCount(user._id)
+  const cartCount = await usercontroller.getCartCount(req.session.user._id)
   const user = await usercontroller.getAddress(req.body.addressId, req.session.user._id);
   let total = cart.finalTotal
   console.log(user);
@@ -277,9 +282,10 @@ router.get('/view-order-details/:id', verifyUser, async (req, res) => {
 })
 
 
-router.post('/verify-payment', verifyUser, (req, res) => {
+router.post('/verify-payment', verifyUser, async (req, res) => {
+  const cart = await usercontroller.getCart(req.session.user._id)
   usercontroller.verifyPayment(req.body).then(() => {
-    usercontroller.changeOrderStatus(req.body['order[receipt]'], req.session.user._id).then(() => {
+    usercontroller.changeOrderStatus(req.body['order[receipt]'],cart._id).then(() => {
       console.log('Payment successfull');
       res.json({ status: true })
     })

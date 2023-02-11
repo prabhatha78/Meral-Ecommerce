@@ -259,7 +259,6 @@
         function downloadInvoice(data) {
             easyinvoice.createInvoice(data, function (result) {
                 //The response will contain a base64 encoded PDF file
-                alert('PDF base64 string: ', result.pdf);
                 easyinvoice.download('invoice.pdf')
             });
         }

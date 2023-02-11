@@ -54,7 +54,15 @@ module.exports = {
 
     getCategory: (catId) => {
         return new Promise(async (resolve, reject) => {
-            db.get().collection(collection.CATEGORY_COLLECTION).findOne({ _id: ObjectId(catId) }).then((response) => {
+            db.get().collection(collection.CATEGORY_COLLECTION).findOne({_id:ObjectId(catId)}).then((response) => {
+                resolve(response)
+            })
+        })
+    },
+
+    getCategory: (catname) => {
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.CATEGORY_COLLECTION).findOne({category_name:catname}).then((response) => {
                 resolve(response)
             })
         })
@@ -108,6 +116,15 @@ module.exports = {
     getIngredient: (ingreId) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.INGREDIENT_COLLECTION).findOne({ _id: ObjectId(ingreId) }).then((response) => {
+                console.log(response);
+                resolve(response)
+            })
+        })
+    },
+
+    getIngredient: (ingrename) => {
+        return new Promise(async (resolve, reject) => {
+            db.get().collection(collection.INGREDIENT_COLLECTION).findOne({ ingredient_name:ingrename }).then((response) => {
                 console.log(response);
                 resolve(response)
             })
