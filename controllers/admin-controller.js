@@ -2,6 +2,7 @@ var db = require('../config/connection')
 var collection = require('../config/collection')
 const bcrypt = require('bcrypt')
 const ObjectId = require('mongodb').ObjectId
+const salesreport = require('../middleware/salesreport')
 
 
 module.exports = {
@@ -421,7 +422,51 @@ module.exports = {
             ]).toArray()
             resolve(orderTotal)
         })
-    }
+    },
 
+
+    gerSalesReportInfo: (details) => {      
+        console.log('llllll');
+        return new Promise( async (resolve,reject)=>{
+            if (new Date(details.fromdate) < new Date() && new Date(details.todate) < new Date()) {
+                let data = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                    {
+                        $match:{
+                            $and:[
+                                {'shipmentStatus.delivered.status':true},
+                                {
+                                    orderDate: {
+                                        $gt: new Date(details.fromdate),
+                                        $lte: new Date(details.todate)
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    {
+                        $unwind: '$products'
+                    },
+                    {
+                        $group: {
+                            _id: "$month",
+                            total: { $sum: '$total' },
+                            orderCount: { $sum: 1 },
+                            productQty: { $sum: "$products.quantity" }
+                        }
+                    },
+                    {
+                        $sort: { monthInNo: 1 }
+                    }
+                ]).toArray();
+                console.log(data);
+                salesreport(data).then(() => {
+                    resolve({ status: true })
+                })
+            } 
+            else {
+                resolve({ status: false })
+            }
+        })
+    }
 
 }

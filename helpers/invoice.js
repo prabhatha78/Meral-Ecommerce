@@ -17,11 +17,9 @@ function getInvoice(order, invoiceDetails) {
             // Your recipient
             client: {
                 company: order.deliveryDetails.address.fname + " " + order.deliveryDetails.address.lname,
-                address: order.deliveryDetails.address.line1 + "," +
-                    order.deliveryDetails.address.line2 + "," +
-                    order.deliveryDetails.address.landmark + "," +
-                    order.deliveryDetails.address.citystate + "-" +
-                    order.deliveryDetails.address.zip + ",",
+                address: `${order.deliveryDetails.address.line1},${order.deliveryDetails.address.line2},${order.deliveryDetails.address.landmark}`,
+                zip: order.deliveryDetails.address.zip,
+                city: order.deliveryDetails.address.citystate,
                 country: "INDIA"
             },
             information: {
@@ -29,7 +27,7 @@ function getInvoice(order, invoiceDetails) {
                 number: invoiceDetails._id,
                 // Invoice data
                 date: order.orderDate,
-                duedate: order.expectedDeliveryDate
+                'due-date': order.expectedDeliveryDate
             },
             products: invoiceDetails.products,
 

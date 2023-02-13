@@ -4,7 +4,8 @@ const adminController = require('../controllers/admin-controller')
 const usercontroller = require('../controllers/user-controller')
 const { uploadCategory, uploadProduct, uploadIngredient } = require('../middleware/image-upload')
 const deleteImage = require('../controllers/delete-controller')
-const verifyAdmin = require('../middleware/adminAuth')
+const verifyAdmin = require('../middleware/adminAuth');
+const { resolve } = require('express-hbs/lib/resolver');
 
 
 /* GET admin page. */
@@ -277,6 +278,17 @@ router.get('/delete-coupon/:id', verifyAdmin, function (req, res) {
 router.get('/change-order-status/:orderId/:status', verifyAdmin, function (req, res) {
     adminController.changeOrderstatus(req.params.orderId, req.params.status).then((response) => {
         res.json({ status: true })
+    })
+})
+
+
+router.post('/sales-report',verifyAdmin,(req,res)=>{
+    adminController.gerSalesReportInfo(req.body).then((response)=>{
+        if(response.status){
+            res.json({status:true})
+        } else {
+            res.json({status:false})
+        }
     })
 })
 
