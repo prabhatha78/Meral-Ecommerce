@@ -122,14 +122,15 @@
                             </div>
                             <div class="col-lg-2 col-sm-2 col-2 col-price"> <span>{{this.promo_price}}</span> </div>
                             <div class="col-lg-2 col-sm-2 col-2 col-price"> <span>{{this.volume}}</span> </div>
-
+                            {{#if this.quantity}}
                             <div class="col-lg-2 col-sm-2 col-2 col-status">
                                 <span class="badge rounded-pill alert-success">In stock</span>
                             </div>
-
-                            {{!-- <div class="col-lg-2 col-sm-2 col-4 col-status">
-                                <span class="badge rounded-pill alert-danger">Disabled</span>
-                            </div> --}}
+                            {{else}}
+                            <div class="col-lg-2 col-sm-2 col-4 col-status">
+                                <span class="badge rounded-pill alert-danger">Out of stock</span>
+                            </div>
+                            {{/if}}
                             <div class="col-lg-2 col-sm-2 col-2 col-action text-end">
                                 <a href="/admin/edit-product/{{this._id}}" class="btn btn-sm font-sm rounded btn-brand">
                                     <i class="material-icons md-edit"></i> Edit

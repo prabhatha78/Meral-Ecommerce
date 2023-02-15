@@ -99,7 +99,7 @@ module.exports = {
             let loginStatus = false;
             let response = {};
             let user = await db.get().collection(collection.USER_COLLECTION).findOne({ email: userData.email })
-            if (user) {
+            if (user.status) {
                 bcrypt.compare(userData.password, user.password).then((status) => {
                     if (status) {
                         response.user = user;
@@ -169,6 +169,7 @@ module.exports = {
                                 $inc: {
                                     'products.$.quantity': 1,
                                     'products.$.price': price,
+                                    'totalquantity' : 1,
                                     'total': price,
                                     'finalTotal': price
 
@@ -182,6 +183,7 @@ module.exports = {
                             {
                                 $push: { products: proObj },
                                 $inc: {
+                                    'totalquantity': 1,
                                     'total': price,
                                     'finalTotal': price
                                 }
@@ -194,6 +196,7 @@ module.exports = {
                 let cartObj = {
                     user: ObjectId(userId),
                     products: [proObj],
+                    totalquantity: 1,
                     total: price,
                     finalTotal: price
                 }
@@ -332,7 +335,7 @@ module.exports = {
                         db.get().collection(collection.CART_COLLECTION)
                             .updateOne({ _id: ObjectId(details.cart) },
                                 {
-                                    $inc: { 'total': -price, 'finalTotal': -price },
+                                    $inc: {'totalquantity':-1, 'total': -price, 'finalTotal': -price },
                                     $pull: { products: { item: ObjectId(details.product) } }
                                 }
                             ).then(() => {
@@ -346,6 +349,7 @@ module.exports = {
                                     $inc: {
                                         'products.$.quantity': details.count,
                                         'products.$.price': price * details.count,
+                                        'totalquantity':details.count,
                                         'total': price * details.count,
                                         'finalTotal': price * details.count
     
@@ -398,12 +402,12 @@ module.exports = {
 
     removeFromCart: async (data) => {
         let price = parseInt(data.price)
-
+        let quantity = parseInt(data.quantity)
         return new Promise((resolve, reject) => {
             db.get().collection(collection.CART_COLLECTION)
                 .updateOne({ _id: ObjectId(data.cartId) },
                     {
-                        $inc: { 'total': -price, 'finalTotal': -price },
+                        $inc: { 'totalquantity':-quantity, 'total': -price, 'finalTotal': -price },
                         $pull: { products: { item: ObjectId(data.proId) } },
                         $unset: { discount: "", savings: "", coupon: "" }
                     }
@@ -440,6 +444,7 @@ module.exports = {
                 username: name,
                 paymentMethod: order.paymentMethod,
                 products: products,
+                totalquantity: cart.totalquantity,
                 subtotal: cart.total,
                 coupon: cart.coupon,
                 discount: cart.savings,

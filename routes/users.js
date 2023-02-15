@@ -8,13 +8,7 @@ const nodemailer = require('nodemailer');
 const session = require('express-session');
 const getInvoice = require('../helpers/invoice')
 const verifyUser = require('../middleware/userAuth')
-const verifyLogin = (req, res, next) => {
-  if (req.session.userloggedIn) {
-    next()
-  } else {
-    res.redirect('/login')
-  }
-}
+
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
@@ -92,8 +86,8 @@ router.post('/check-otp', (req, res) => {
   }
 })
 
-router.get('/logout', function (req, res) {
-  req.session.destroy();
+router.get('/log-out', function (req, res) {
+  req.session.userloggedIn = false
   res.redirect('/')
 })
 

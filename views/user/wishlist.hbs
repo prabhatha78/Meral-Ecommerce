@@ -1,6 +1,9 @@
 <section style="background-color: #eee; padding-top:8%">
     <div class="container py-5">
         {{#if wishlist}}
+        <div class="list-head pl-5 pb-4 pt-2" style="display: flex;justify-content:center">
+            <h1 style="color:#000">WISHLIST</h1>
+        </div>
         {{#each wishlist}}
         <div class="row justify-content-center mb-3">
             <div class="col-md-12 col-xl-10">
@@ -21,16 +24,6 @@
                             </div>
                             <div class="col-md-6 col-lg-6 col-xl-6">
                                 <h5>{{this.product.product_name}}</h5>
-                                <div class="d-flex flex-row" style="color: #48802fde;">
-                                    <div class="mb-1 me-2">
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                        <i class="fa fa-star"></i>
-                                    </div>
-                                    <span>310</span>
-                                </div>
                                 <div class="mb-2 text-muted small">
                                     • <span>Unique design</span><br>
                                     <span> • </span>

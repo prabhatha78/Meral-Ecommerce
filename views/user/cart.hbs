@@ -122,12 +122,14 @@
     }
     function removeFromCart(cartId, proId) {
         let price = parseInt(document.getElementById('price' + proId).innerHTML)
+        let quantity = parseInt(document.getElementById(proId).innerHTML)
         $.ajax({
             url: '/remove-from-cart/',
             data: {
                 cartId: cartId,
                 proId: proId,
-                price: price
+                price: price,
+                quantity: quantity
             },
             method: 'post',
             success: (response) => {

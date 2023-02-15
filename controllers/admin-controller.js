@@ -9,7 +9,6 @@ module.exports = {
     adminLogin: (adminData) => {
         return new Promise(async (resolve, reject) => {
 
-            console.log(adminData);
             let loginStatus = false;
             let response = {};
             let admin = await db.get().collection(collection.ADMIN_COLLECTION).findOne({ username: adminData.username })
@@ -103,7 +102,6 @@ module.exports = {
                 }) 
             }
             
-            console.log(ingredient)
         })
     },
 
@@ -117,7 +115,6 @@ module.exports = {
     getIngredient: (ingreId) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.INGREDIENT_COLLECTION).findOne({ _id: ObjectId(ingreId) }).then((response) => {
-                console.log(response);
                 resolve(response)
             })
         })
@@ -126,7 +123,6 @@ module.exports = {
     getIngredient: (ingrename) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.INGREDIENT_COLLECTION).findOne({ ingredient_name:ingrename }).then((response) => {
-                console.log(response);
                 resolve(response)
             })
         })
@@ -160,7 +156,6 @@ module.exports = {
         product.quantity = quantity
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).insertOne(product).then((data) => {
-                console.log(data)
                 resolve()
             })
 
@@ -217,7 +212,6 @@ module.exports = {
     getProductImage: (proId, imgno) => {
         return new Promise(async (resolve, reject) => {
             db.get().collection(collection.PRODUCT_COLLECTION).findOne({ _id: ObjectId(proId) }).then((response) => {
-                console.log(response.images[imgno])
                 resolve(response.images[imgno])
 
             })
@@ -300,7 +294,6 @@ module.exports = {
 
     deleteCoupon: (couponId) => {
         return new Promise(async (resolve, reject) => {
-            console.log('hjgjhgjhgjg');
 
             db.get().collection(collection.COUPON_COLLECTION)
                 .updateOne({ _id: ObjectId(couponId) }, { $set: { status: false } }).then((response) => {
@@ -402,7 +395,30 @@ module.exports = {
             orders.forEach(element => {
                 details.push(element.total)
             });
-            console.log(details);
+            resolve(details)
+        })
+    },
+
+    getOrdersQuantity: () => {
+        return new Promise(async (resolve) => {
+            let orders = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
+                {
+                    $match: { "shipmentStatus.delivered.status": true }
+                },
+                {
+                    $group: {
+                        _id: "$monthInNo",
+                        total: { $sum: '$totalquantity' }
+                    }
+                },
+                {
+                    $sort: { _id: 1 }
+                }
+            ]).toArray()
+            let details = [];
+            orders.forEach(element => {
+                details.push(element.total)
+            });
             resolve(details)
         })
     },
@@ -424,9 +440,10 @@ module.exports = {
         })
     },
 
+    
+
 
     gerSalesReportInfo: (details) => {      
-        console.log('llllll');
         return new Promise( async (resolve,reject)=>{
             if (new Date(details.fromdate) < new Date() && new Date(details.todate) < new Date()) {
                 let data = await db.get().collection(collection.ORDER_COLLECTION).aggregate([
@@ -444,21 +461,17 @@ module.exports = {
                         }
                     },
                     {
-                        $unwind: '$products'
-                    },
-                    {
                         $group: {
                             _id: "$month",
                             total: { $sum: '$total' },
                             orderCount: { $sum: 1 },
-                            productQty: { $sum: "$products.quantity" }
+                            productQty: { $sum: "$totalquantity" }
                         }
                     },
                     {
                         $sort: { monthInNo: 1 }
                     }
                 ]).toArray();
-                console.log(data);
                 salesreport(data).then(() => {
                     resolve({ status: true })
                 })

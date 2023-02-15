@@ -11,7 +11,7 @@ const { resolve } = require('express-hbs/lib/resolver');
 /* GET admin page. */
 router.get('/', function (req, res, next) {
     if (req.session.adminloggedIn) {
-        res.redirect('/admin/dashboard', { admin: true })
+        res.redirect('/admin/dashboard')
     } else {
         res.redirect('/admin/login')
     }
@@ -46,12 +46,15 @@ router.post('/login', function (req, res) {
 router.get('/dashboard', verifyAdmin, async function (req, res) {
     if (req.session.adminloggedIn) {
         let monthData = await adminController.getOrdersByMonth()
+        console.log(monthData);
         let dashboard = await adminController.dashboardCount()
         let orderTotal = await adminController.getOrderTotal()
-        res.render('admin/dashboard', { admin: true, dashboard, monthData, orderTotal })
+        let orderquantity = await adminController.getOrdersQuantity()
+        console.log(orderquantity);
+        res.render('admin/dashboard', { admin: true, dashboard, monthData, orderTotal,orderquantity })
     }
     else {
-        res.redirect('/admin')
+        res.redirect('/')
     }
 })
 
@@ -293,7 +296,7 @@ router.post('/sales-report',verifyAdmin,(req,res)=>{
 })
 
 router.get('/logout', function (req, res) {
-    req.session.destroy();
+    req.session.adminLogin= false;
     res.redirect('/admin')
 })
 
